@@ -131,4 +131,7 @@ window.onload = function() {
     besogo.autoInit();
     const n = getNumber();
     document.querySelector("div#title").innerText="Josekle #"+n;
+    if (debug) {
+        document.querySelector("button#puzzle").classList.remove("hide");
+    }
 };
