@@ -199,3 +199,18 @@ SOFTWARE.
     stroke: #929591;
     stroke-width: 4;
 }
+
+.besogo-correct {
+    stroke: #89fe05;
+    stroke-width: 12;
+}
+
+.besogo-hint {
+    stroke: #ffff14;
+    stroke-width: 12;
+}
+
+.besogo-miss {
+    stroke: #e50000;
+    stroke-width: 8;
+}

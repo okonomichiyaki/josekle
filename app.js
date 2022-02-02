@@ -25,6 +25,9 @@ function extractMoves() {
     var inputBoard=document.querySelector("#input-board");
     var current=inputBoard.editor.getCurrent();
     var moves=[];
+    if (current.markup.length > 0) {
+        return []; // Detects if there are already hints
+    }
     while (current.move !== null) {
         moves.push({x:current.move.x, y:current.move.y});
         current=current.parent;
@@ -38,17 +41,19 @@ function isYellow(candidate, solution) {
     return solution.find(move => move.x===candidate.x && move.y===candidate.y);
 }
 function check(moves, solution) {
-    var limit = Math.min(moves.length, solution.length);
-    var output=[];
-    for (i=0;i<limit;i++) {
-        var move=moves[i];
-        var correct=solution[i];
-        if (move.x===correct.x && move.y===correct.y) {
+    var output = [];
+    var inputBoard=document.querySelector("#input-board");
+    for (i = 0; i < moves.length; i++) {
+        var move = moves[i];
+        if (i < solution.length && move.x === solution[i].x && move.y === solution[i].y) {
             output.push(GREEN);
+            inputBoard.editor.setHint(move.x, move.y, 1);
         } else if (isYellow(move, solution)) {
             output.push(YELLOW);
+            inputBoard.editor.setHint(move.x, move.y, 2);
         } else {
             output.push(WHITE);
+            inputBoard.editor.setHint(move.x, move.y, 3);
         }
     }
     return output;
@@ -104,6 +109,9 @@ function display(message) {
 }
 function submit() {
     var moves = extractMoves();
+    if (moves.length === 0) {
+        return;
+    }
     var solution = getSolution();
     if (debug) {
         console.log("guess: " + pretty_print(moves));
