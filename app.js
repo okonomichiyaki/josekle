@@ -106,16 +106,10 @@ function submit() {
     var moves = extractMoves();
     var solution = getSolution();
     if (debug) {
-        console.log("guess: " + pretty_print(normalize(moves)));
-        console.log("solution: " + pretty_print(normalize(solution)));
+        console.log("guess: " + pretty_print(moves));
+        console.log("solution: " + pretty_print(solution));
     }
-    var hints = check(normalize(moves), normalize(solution));
-    var hintsRotated = check(reflect(normalize(moves)), normalize(solution));
-    var wasRotated = false;
-    if (better(hintsRotated, hints)) {
-        hints = hintsRotated;
-        wasRotated = true;
-    }
+    var hints = check(moves, solution);
     guesses.push(hints);
     var message=hints.join("");
     if (moves.length < solution.length) {
@@ -126,8 +120,6 @@ function submit() {
     if (wasCorrect(hints, solution)) {
         message+=" correct!";
         toggleButtons();
-    } else if (wasRotated) {
-        message += ROTATE;
     }
     display(message);
 }
