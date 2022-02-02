@@ -74,13 +74,13 @@ function better(a, b) {
     var bgreens = b.filter(x => x === GREEN).length;
     return (ayellows + agreens*2) > (byellows + bgreens*2);
 }
-function wasCorrect(hints) {
+function wasCorrect(hints, solution) {
     for (i=0;i<hints.length;i++) {
         if (hints[i]===YELLOW || hints[i]===WHITE) {
             return false;
         }
     }
-    return true;
+    return solution.length === hints.length;
 }
 function share() {
     var text = "Josekle #" + today + "\n";
@@ -117,7 +117,7 @@ function submit() {
     } else if (moves.length > solution.length) {
         message+=" too many moves";
     }
-    if (wasCorrect(hints)) {
+    if (wasCorrect(hints, solution)) {
         message+=" correct!";
         toggleButtons();
     }
