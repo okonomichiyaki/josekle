@@ -8,10 +8,15 @@ var guesses=[];
 var today = getNumber();
 
 function getNumber() {
+    const re=/puzzle=(\d+)/;
+    var m;
+    if ((m = window.location.href.match(re)) && m.length > 1) {
+        return parseInt(m[1]);
+    }
     const dayMillis = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
     const start = new Date(2022, 1, 1);
     const today = new Date();
-    return Math.round(Math.abs((today - start) / dayMillis));
+    return Math.round(Math.abs((start - today) / dayMillis));
 }
 function getSolution() {
     return puzzles[today % puzzles.length];
@@ -126,17 +131,21 @@ function submit() {
     }
     display(message);
 }
-function getPuzzle() {
-    console.log(JSON.stringify(extractMoves()));
+
+// utilities for collecting josekis:
+var collection=[];
+function addPuzzle() {
+    collection.push(JSON.stringify(extractMoves()));
 }
-function tomorrow() {
-    today++;
+function copyPuzzles() {
+    var text = collection.join(",\n");
+    navigator.clipboard.writeText(text);
 }
 window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
-        document.querySelector("button#puzzle").classList.remove("hide");
-        document.querySelector("button#tomorrow").classList.remove("hide");
+        document.querySelector("button#addPuzzle").classList.remove("hide");
+        document.querySelector("button#copyPuzzles").classList.remove("hide");
     }
 };
