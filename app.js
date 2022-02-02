@@ -21,9 +21,7 @@ function getNumber() {
 function getSolution() {
     return puzzles[today % puzzles.length];
 }
-function extractMoves() {
-    var inputBoard=document.querySelector("#input-board");
-    var current=inputBoard.editor.getCurrent();
+function extractMovesFrom(current) {
     var moves=[];
     if (current.markup.length > 0) {
         return []; // Detects if there are already hints
@@ -33,6 +31,11 @@ function extractMoves() {
         current=current.parent;
     }
     return moves.reverse();
+}
+function extractMoves() {
+    var inputBoard=document.querySelector("#input-board");
+    var current=inputBoard.editor.getCurrent();
+    extractMovesFrom(current);
 }
 function pretty_print(moves) {
     return moves.map(move => move.x+"-"+move.y).join(", ");
@@ -133,11 +136,24 @@ function submit() {
 }
 
 // utilities for collecting josekis:
-var collection=[];
-function addPuzzle() {
-    collection.push(JSON.stringify(extractMoves()));
-}
 function copyPuzzles() {
+    var inputBoard=document.querySelector("#input-board");
+    var root=inputBoard.editor.getRoot();
+    var leaves=[];
+    var nodes=[];
+    if (root.children.length>0) {
+        nodes.push(root);
+    }
+    while (nodes.length>0) {
+        var node = nodes.pop();
+        if (node.children.length===0) {
+            leaves.push(node);
+        } else {
+            node.children.forEach(child => { nodes.push(child) });
+        }
+    }
+    console.log("found " + leaves.length + " leaves");
+    var collection = leaves.map(extractMovesFrom).map(JSON.stringify);
     var text = collection.join(",\n");
     navigator.clipboard.writeText(text);
 }
@@ -145,7 +161,6 @@ window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
-        document.querySelector("button#addPuzzle").classList.remove("hide");
         document.querySelector("button#copyPuzzles").classList.remove("hide");
     }
 };
