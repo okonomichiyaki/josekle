@@ -11,7 +11,7 @@ function getNumber() {
     const dayMillis = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
     const start = new Date(2022, 1, 1);
     const today = new Date();
-    return Math.round(Math.abs((start - today) / dayMillis));
+    return Math.round(Math.abs((today - start) / dayMillis));
 }
 function getSolution() {
     return puzzles[today % puzzles.length];
