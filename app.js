@@ -1,11 +1,11 @@
 const debug = window.location.href.includes("debug=true");
-
 const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟡";
 const ROTATE = "🔄";
 
 var guesses=[];
+var today = getNumber();
 
 function getNumber() {
     const dayMillis = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
@@ -14,8 +14,7 @@ function getNumber() {
     return Math.round(Math.abs((start - today) / dayMillis));
 }
 function getSolution() {
-    const n = getNumber();
-    return puzzles[n % puzzles.length];
+    return puzzles[today % puzzles.length];
 }
 function extractMoves() {
     var inputBoard=document.querySelector("#input-board");
@@ -84,7 +83,7 @@ function wasCorrect(hints) {
     return true;
 }
 function share() {
-    var text = "Josekle #" + getNumber() + "\n";
+    var text = "Josekle #" + today + "\n";
     text += guesses.map(guess => guess.join("")).join("\n");
     navigator.clipboard.writeText(text);
 }
@@ -127,11 +126,14 @@ function submit() {
 function getPuzzle() {
     console.log(JSON.stringify(extractMoves()));
 }
+function tomorrow() {
+    today++;
+}
 window.onload = function() {
     besogo.autoInit();
-    const n = getNumber();
-    document.querySelector("div#title").innerText="Josekle #"+n;
+    document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
         document.querySelector("button#puzzle").classList.remove("hide");
+        document.querySelector("button#tomorrow").classList.remove("hide");
     }
 };
