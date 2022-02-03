@@ -35,7 +35,7 @@ function extractMovesFrom(current) {
 function extractMoves() {
     var inputBoard=document.querySelector("#input-board");
     var current=inputBoard.editor.getCurrent();
-    extractMovesFrom(current);
+    return extractMovesFrom(current);
 }
 function pretty_print(moves) {
     return moves.map(move => move.x+"-"+move.y).join(", ");
