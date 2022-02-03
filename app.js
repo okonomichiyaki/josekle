@@ -1,7 +1,7 @@
 const debug = window.location.href.includes("debug=true");
 const GREEN = "🟢";
 const WHITE = "⚪";
-const YELLOW = "🟡";
+const YELLOW = "🟣";
 const ROTATE = "🔄";
 
 var guesses=[];

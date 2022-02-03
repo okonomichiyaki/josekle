@@ -145,6 +145,10 @@ SOFTWARE.
     padding: 3px;
 }
 
+.besogo-nav-select {
+    fill: #d0fefe;
+}
+
 .besogo-tool {
     display: flex;
     align-items: center;
@@ -200,13 +204,25 @@ SOFTWARE.
     stroke-width: 4;
 }
 
+.besogo-black-label {
+    fill: #eeeeee;
+}
+
+.besogo-white-label {
+    fill: #252525;
+}
+
+.besogo-variant-label {
+    fill: #ff474c;
+}
+
 .besogo-correct {
-    stroke: #89fe05;
+    stroke: #16a34a;
     stroke-width: 12;
 }
 
 .besogo-hint {
-    stroke: #ffff14;
+    stroke: #6d28d9;
     stroke-width: 12;
 }
 
