@@ -40,6 +40,8 @@ function extractMoves() {
 function pretty_print(moves) {
     return moves.map(move => move.x+"-"+move.y).join(", ");
 }
+
+// OLD functions to check correctness of moves, now using editor-based function
 function isYellow(candidate, solution) {
     return solution.find(move => move.x===candidate.x && move.y===candidate.y);
 }
@@ -50,17 +52,18 @@ function check(moves, solution) {
         var move = moves[i];
         if (i < solution.length && move.x === solution[i].x && move.y === solution[i].y) {
             output.push(GREEN);
-            inputBoard.editor.setHint(move.x, move.y, 1);
+            // inputBoard.editor.setHint(move.x, move.y, 1);
         } else if (isYellow(move, solution)) {
             output.push(YELLOW);
-            inputBoard.editor.setHint(move.x, move.y, 2);
+            // inputBoard.editor.setHint(move.x, move.y, 2);
         } else {
             output.push(WHITE);
-            inputBoard.editor.setHint(move.x, move.y, 3);
+            // inputBoard.editor.setHint(move.x, move.y, 3);
         }
     }
     return output;
 }
+
 function reflect(moves) {
     return moves.map(move => {
         return {x:move.y, y:move.x};
@@ -120,7 +123,7 @@ function submit() {
         console.log("guess: " + pretty_print(moves));
         console.log("solution: " + pretty_print(solution));
     }
-    var hints = check(moves, solution);
+    var hints = document.querySelector("#input-board").editor.check(solution);
     guesses.push(hints);
     var message=hints.join("");
     if (moves.length < solution.length) {
