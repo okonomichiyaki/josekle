@@ -851,7 +851,7 @@ besogo.makeBoardDisplay = function(container, editor) {
                     }
                     // Label variants with letters A-Z cyclically
                     label = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-                    element = besogo.svgLabel(x, y, besogo.LRED, label);
+                    element = besogo.svgLabel(x, y, 0, label);
                     group.appendChild(element);
                     markupLayer[ fromXY(move.x, move.y) ] = element;
                 }
@@ -3282,6 +3282,7 @@ besogo.svgBlock = function(x, y, color) {
 // Makes a label at (x, y)
 besogo.svgLabel = function(x, y, color, label) {
     var element,
+        attrs,
         size;
 
     // Trims label to 3 characters
@@ -3302,15 +3303,27 @@ besogo.svgLabel = function(x, y, color, label) {
             break;
     }
 
-    element = besogo.svgEl("text", {
+    attrs = {
         x: x,
         y: y,
         dy: ".65ex", // Seems to work for vertically centering these fonts
         "font-size": size,
         "text-anchor": "middle", // Horizontal centering
-        "font-family": "Helvetica, Arial, sans-serif",
-        fill: color
-    });
+        "font-family": "Helvetica, Arial, sans-serif"
+    };
+    if (typeof color === 'number') {
+        if (color < 0) {
+            attrs["class"] = "besogo-black-label";
+        } else if (color > 0) {
+            attrs["class"] = "besogo-white-label";
+        } else {
+            attrs["class"] = "besogo-variant-label"
+        }
+    } else {
+        attrs["fill"] = color;
+    }
+
+    element = besogo.svgEl("text", attrs);
     element.appendChild( document.createTextNode(label) );
 
     return element;
@@ -3559,7 +3572,7 @@ besogo.makeTreePanel = function(container, editor) {
             container.scrollTop = markY + GRIDSIZE - height;
         }
 
-        marker.setAttribute('opacity', 1); // Always visible
+        marker.setAttribute('opacity', 0.5); // Always visible
         marker.onmouseover = null; // Clear hover over action
         marker.onmouseout = null; // Clear hover off action
         bottomLayer.appendChild(marker); // Moves marker to the background
@@ -3679,9 +3692,7 @@ besogo.makeTreePanel = function(container, editor) {
             case 'move': // Move node
                 color = node.move.color;
                 element.appendChild( besogo.svgStone(svgPos(x), svgPos(y), color) );
-                color = (color === -1) ? "white" : "black";
-                element.appendChild( besogo.svgLabel(svgPos(x), svgPos(y), color,
-                        '' + node.moveNumber) );
+                element.appendChild( besogo.svgLabel(svgPos(x), svgPos(y), color, '' + node.moveNumber) );
                 break;
             case 'setup': // Setup node
                 element = besogo.svgEl("g");
@@ -3717,7 +3728,7 @@ besogo.makeTreePanel = function(container, editor) {
             y: svgPos(y) - 55,
             width: 110,
             height: 110,
-            fill: besogo.TURQ
+            "class": "besogo-nav-select"
         });
         element.onclick = function() {
             editor.setCurrent(node);

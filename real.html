@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Josekle</title>
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/besogo.css" rel="stylesheet" />
+  <link href="css/real.css" rel="stylesheet" />
+  <script src="besogo.all.js"></script>
+  <script src="app.js"></script>
+  <script src="puzzles.js"></script>
+</head>
+<body>
+<div id="title"></div>
+<div id="input-board" class="besogo-editor" resize="fixed" coord="western" panels="control+tree" realstones="on"></div>
+<button id="addPuzzle" class="hide" onclick="addPuzzle();">add puzzle</button>
+<button id="copyPuzzles" class="hide" onclick="copyPuzzles();">copy puzzles</button>
+<button id="submit" onclick="submit();">submit</button>
+<div id="output"></div>
+<button id="share" class="hide" onclick="share();">share</button>
+</body>
+</html>
