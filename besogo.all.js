@@ -1201,9 +1201,9 @@ besogo.makeControlPanel = function(container, editor) {
     drawNavButtons();
     drawStyleButtons();
 
-    makeButtonText('Delete', 'Remove branch', function(){
-        editor.cutCurrent();
-    });
+    makeButtonText('Delete', 'Remove branch', editor.cutCurrent);
+    makeButtonText('Submit', 'Submit guess', submit);
+
     // Creates text button
     function makeButtonText(text, tip, callback) {
         var button = document.createElement('input');
@@ -1604,7 +1604,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
         getCurrent: getCurrent,
         setCurrent: setCurrent,
         cutCurrent: cutCurrent,
-        setHint: setHint,
+        check: check,
         promote: promote,
         demote: demote,
         getRoot: getRoot,
@@ -2060,11 +2060,46 @@ besogo.makeEditor = function(sizeX, sizeY) {
         }
     }
 
-    // Sets Josekle hint, mark = 1 / 2 / 3, for correct / hint / miss
-    function setHint(i, j, mark) {
-        current.addMarkup(i, j, mark);
-        root.addMarkup(i, j, mark);
+    // Sets Josekle hints, mark = 1 / 2 / 3, for correct / hint / miss
+    function setHints(path, start, mark) {
+        var i,
+            x = path[start].move.x,
+            y = path[start].move.y;
+        for (i = start; i < path.length; i++) {
+            path[i].addMarkup(x, y, mark);
+        }
+        root.addMarkup(x, y, mark);
+    }
+
+    // Check correctness of current given solution
+    function check(solution) {
+        var i, node,
+            path = [],
+            hints = [];
+
+        node = current;
+        while (node.move !== null) {
+            path.push(node);
+            node = node.parent;
+        }
+        path.reverse();
+
+        for (i = 0; i < path.length; i++) {
+            node = path[i].move;
+            if (i < solution.length && node.x === solution[i].x && node.y === solution[i].y) {
+                hints.push(GREEN);
+                setHints(path, i, 1);
+            } else if (solution.find(move => move.x === node.x && move.y === node.y)) {
+                hints.push(YELLOW);
+                setHints(path, i, 2);
+            } else {
+                hints.push(WHITE);
+                setHints(path, i, 3);
+            }
+        }
+
         notifyListeners({ markupChange: true, treeChange: true });
+        return hints;
     }
 
     // Adds a listener (by call back func) that will be notified on game/editor state changes
@@ -2406,7 +2441,8 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
         if (x < 1 || y < 1 || x > sizeX || y > sizeY) {
             return false; // Do not allow out of bounds markup
         }
-        if (this.getMarkup(x, y) === 1) { // Avoids overwriting green with yellow
+        if (!this.parent && this.getMarkup(x, y) === 1) {
+            // Avoids overwriting green with yellow in root
             return false;
         }
         this.markup[ fromXY(x, y) ] = mark;
@@ -3672,8 +3708,11 @@ besogo.makeTreePanel = function(container, editor) {
     function makeNodeIcon(node, x, y) { // Makes a node icon for the tree
         var element = besogo.svgEl("g"),
             color,
-            hint = node.getBestHint();
+            hint = 0;
 
+        if (node.move) {
+            hint = node.getMarkup(node.move.x, node.move.y);
+        }
         switch(hint) {
             case 1:
                 hint = besogo.svgCircle(svgPos(x), svgPos(y), color)
