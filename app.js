@@ -1,9 +1,25 @@
 const debug = window.location.href.includes("debug=true");
+var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟣";
 const ROTATE = "🔄";
-
+function supportsEmoji (e) {
+    const ctx = document.createElement("canvas").getContext("2d");
+    ctx.canvas.width = ctx.canvas.height = 1;
+    ctx.fillText(e, -4, 4);
+    return ctx.getImageData(0, 0, 1, 1).data[3] > 0; // Not a transparent pixel
+}
+function supportsAll(emojis) {
+    for (var i = 0; i < emojis.length; i++) {
+        var e = emojis[i];
+        if (!supportsEmoji(e)) {
+            return false;
+        }
+    }
+    return true;
+}
+const CIRCLES = supportsAll(circles);
 var guesses=[];
 var today = getNumber();
 
@@ -111,8 +127,33 @@ function toggleButtons() {
 function display(message) {
     var output = document.querySelector("#output");
     var p = document.createElement("p");
-    p.innerText=message;
-    output.appendChild(p);
+    if (CIRCLES) {
+        p.innerText=message;
+        output.appendChild(p);
+    } else {
+        var rest = [];
+        var split = [...message];
+        console.log(split);
+        split.forEach(c => {
+            if (c === YELLOW) {
+                var img = document.createElement("img");
+                img.src = "img/emojis/yellow.png";
+                p.appendChild(img);
+            } else if (c === GREEN) {
+                var img = document.createElement("img");
+                img.src = "img/emojis/green.png";
+                p.appendChild(img);
+            } else if (c === WHITE) {
+                var img = document.createElement("img");
+                img.src = "img/emojis/white.png";
+                p.appendChild(img);
+            } else {
+                rest.push(c);
+            }
+        });
+        p.innerHTML+=rest.join("");
+        output.appendChild(p);
+    }
 }
 function submit() {
     var moves = extractMoves();

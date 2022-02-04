@@ -13,11 +13,14 @@
         ctx.fillText(e, -4, 4);
         return ctx.getImageData(0, 0, 1, 1).data[3] > 0; // Not a transparent pixel
     }
-    if (supportsEmoji("🟡")) {
-        document.querySelector("div#output").innerText = "🟡";
-    } else {
-        document.querySelector("div#output").innerText = "no yellow circle? 🟨";
-    }
+    var emojis = ["🟢","⚪","🟣","🟡"];
+    emojis.forEach(e => {
+        if (supportsEmoji(e)) {
+            document.querySelector("div#output").innerText += e;
+        } else {
+            document.querySelector("div#output").innerText += "x";
+        }
+    });
 </script>
 
 </body>
