@@ -91,12 +91,13 @@ function better(a, b) {
     return (ayellows + agreens*2) > (byellows + bgreens*2);
 }
 function wasCorrect(hints, solution) {
-    for (i=0;i<hints.length;i++) {
+    // Considers guess to be correct if the solution is a prefix
+    for (i=0; i < hints.length && i < solution.length; i++) {
         if (hints[i]===YELLOW || hints[i]===WHITE) {
             return false;
         }
     }
-    return solution.length === hints.length;
+    return solution.length <= hints.length;
 }
 function share() {
     var text = "Josekle #" + today + "\n";
@@ -132,7 +133,29 @@ function submit() {
         message+=" too many moves";
     }
     if (wasCorrect(hints, solution)) {
-        message+=" correct!";
+        if (hints.length > solution.length) {
+            message += " Good Enough!";
+        } else {
+            switch(guesses.length) {
+                case 1:
+                    message += " Genius";
+                    break;
+                case 2:
+                    message += " Magnificent";
+                    break;
+                case 3:
+                    message += " Impressive";
+                    break;
+                case 4:
+                    message += " Splendid";
+                    break;
+                case 5:
+                    message += " Great";
+                    break;
+                default:
+                    message += " Phew";
+            }
+        }
         toggleButtons();
     }
     display(message);
