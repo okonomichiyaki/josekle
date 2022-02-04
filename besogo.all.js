@@ -1209,6 +1209,7 @@ besogo.makeControlPanel = function(container, editor) {
         var button = document.createElement('input');
         button.type = 'button';
         button.value = text;
+        button.id = text;
         button.title = tip;
         button.onclick = callback;
         container.appendChild(button);

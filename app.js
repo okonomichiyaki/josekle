@@ -116,13 +116,17 @@ function wasCorrect(hints, solution) {
     return solution.length <= hints.length;
 }
 function share() {
-    var text = "Josekle #" + today + "\n";
+    var text = `[details="Josekle #${today}]\n`;
     text += guesses.map(guess => guess.join("")).join("\n");
+    text += `\n[/details]`
     navigator.clipboard.writeText(text);
 }
 function toggleButtons() {
-    document.querySelector("button#share").classList.remove("hide");
-    document.querySelector("button#submit").classList.add("hide");
+    var button = document.querySelector("input#Submit");
+    button.value = "Share";
+    button.id = "Share";
+    button.title = "Share results via clipboard";
+    button.onclick = share;
 }
 function display(message) {
     var output = document.querySelector("#output");
