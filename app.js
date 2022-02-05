@@ -183,7 +183,7 @@ function submit() {
     var hints = document.querySelector("#input-board").editor.check(solution);
     hints=hints.join("");
     guesses.push(hints);
-    var message;
+    var message = "";
     if (moves.length < solution.length) {
         message = "Too few moves";
     } else if (moves.length > solution.length) {
@@ -247,6 +247,5 @@ window.onload = function() {
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
         document.querySelector("#copy-puzzles").classList.remove("hide");
-        document.querySelector("#dictionary-board").classList.remove("hide");
     }
 };
