@@ -116,7 +116,7 @@ function wasCorrect(hints, solution) {
     return solution.length <= hints.length;
 }
 function share() {
-    var text = `[details="Josekle #${today}]\n`;
+    var text = `[details="Josekle #${today}"]\n`;
     text += guesses.map(guess => guess.join("")).join("\n");
     text += `\n[/details]`
     navigator.clipboard.writeText(text);
@@ -232,6 +232,6 @@ window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
-        document.querySelector("button#copyPuzzles").classList.remove("hide");
+        document.querySelector("#copyPuzzles").classList.remove("hide");
     }
 };

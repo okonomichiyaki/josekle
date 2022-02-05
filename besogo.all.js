@@ -35,6 +35,7 @@ besogo.create = function(container, options) {
         makers = { // Map to panel creators
             control: besogo.makeControlPanel,
             names: besogo.makeNamesPanel,
+            hint: besogo.makeHintPanel,
             comment: besogo.makeCommentPanel,
             tool: besogo.makeToolPanel,
             tree: besogo.makeTreePanel,
@@ -154,7 +155,9 @@ besogo.create = function(container, options) {
                     if (panelsDiv) {
                         height = (height - width < minPanelsHeight) ? width + minPanelsHeight : height;
                     }
-                } // Otherwise, leave height undefined
+                } else {
+                    height = windowHeight;
+                }
             } else if (orientation === 'landscape') { // Landscape mode
                 if (!panelsDiv) { // No panels div
                     height = width; // Square overall
@@ -971,6 +974,14 @@ besogo.makeBoardDisplay = function(container, editor) {
         return (x - 1)*sizeY + (y - 1);
     }
 };
+
+besogo.makeHintPanel = function(container, editor) {
+    'use strict';
+    container.appendChild(document.getElementById("title"))
+    container.appendChild(document.getElementById("output"))
+    container.appendChild(document.getElementById("copyPuzzles"))
+}
+
 besogo.makeCommentPanel = function(container, editor) {
     'use strict';
     var infoTexts = {}, // Holds text nodes for game info properties
