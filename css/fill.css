@@ -1,0 +1,20 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.besogo-hint {
+    font-family: Georgia, serif;
+    font-size: 12pt;
+    white-space: pre-wrap;
+
+    overflow: auto;
+    flex: 1 1 60%;
+    width: 100%;
+}
+
+input.hide {
+    display: none;
+}
