@@ -246,7 +246,7 @@ window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
-        document.querySelector("#copyPuzzles").classList.remove("hide");
+        document.querySelector("#copy-puzzles").classList.remove("hide");
         document.querySelector("#dictionary-board").classList.remove("hide");
     }
 };
