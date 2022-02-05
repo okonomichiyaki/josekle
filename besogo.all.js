@@ -1593,6 +1593,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
         variantStyle = 0; // 0-3, 0 is default
 
     return {
+        navigate: navigate,// expose navigate for josekle mirror board
         addListener: addListener,
         click: click,
         nextNode: nextNode,

@@ -128,16 +128,15 @@ function toggleButtons() {
     button.title = "Share results via clipboard";
     button.onclick = share;
 }
-function display(message) {
+function display(hints, message) {
     var output = document.querySelector("#output");
     var p = document.createElement("p");
     if (CIRCLES) {
-        p.innerText=message;
+        p.innerText = hints + " " + message;
         output.appendChild(p);
     } else {
         var rest = [];
-        var split = [...message];
-        console.log(split);
+        var split = [...hints];
         split.forEach(c => {
             if (c === YELLOW) {
                 var img = document.createElement("img");
@@ -155,9 +154,21 @@ function display(message) {
                 rest.push(c);
             }
         });
-        p.innerHTML+=rest.join("");
+        p.innerHTML += " " + message;
         output.appendChild(p);
     }
+}
+function checkDictionary(moves) {
+    if (!debug) {
+        return true;
+    }
+    var isValid = true;
+    const dict = document.querySelector("#dictionary-board").editor;
+    moves.forEach(move => {
+        isValid &= dict.navigate(move.x, move.y, false);
+    })
+    dict.prevNode(-1);// reset the dictionary board
+    return isValid;
 }
 function submit() {
     var moves = extractMoves();
@@ -170,40 +181,43 @@ function submit() {
         console.log("solution: " + pretty_print(solution));
     }
     var hints = document.querySelector("#input-board").editor.check(solution);
+    hints=hints.join("");
     guesses.push(hints);
-    var message=hints.join("");
+    var message;
     if (moves.length < solution.length) {
-        message+=" too few moves";
+        message = "Too few moves";
     } else if (moves.length > solution.length) {
-        message+=" too many moves";
+        message = "Too many moves";
     }
     if (wasCorrect(hints, solution)) {
         if (hints.length > solution.length) {
-            message += " Good Enough!";
+            message = " Good Enough!";
         } else {
             switch(guesses.length) {
                 case 1:
-                    message += " Genius";
+                    message = " Genius";
                     break;
                 case 2:
-                    message += " Magnificent";
+                    message = " Magnificent";
                     break;
                 case 3:
-                    message += " Impressive";
+                    message = " Impressive";
                     break;
                 case 4:
-                    message += " Splendid";
+                    message = " Splendid";
                     break;
                 case 5:
-                    message += " Great";
+                    message = " Great";
                     break;
                 default:
-                    message += " Phew";
+                    message = " Phew";
             }
         }
         toggleButtons();
+    } else if (!checkDictionary(moves)) {
+        message = "Not present in the dictionary?"; 
     }
-    display(message);
+    display(hints, message);
 }
 
 // utilities for collecting josekis:
@@ -233,5 +247,6 @@ window.onload = function() {
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
         document.querySelector("#copyPuzzles").classList.remove("hide");
+        document.querySelector("#dictionary-board").classList.remove("hide");
     }
 };

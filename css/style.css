@@ -1,6 +1,6 @@
-div#input-board {
+#dictionary-board, #input-board {
     height: 750px; width: 525px
 }
-button.hide {
+.hide {
     display: none;
 }
