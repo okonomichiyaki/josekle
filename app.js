@@ -118,7 +118,9 @@ function wasCorrect(hints, solution) {
 function share() {
     var text = `[details="Josekle #${today}"]\n`;
     text += guesses.map(guess => guess.join("")).join("\n");
-    text += `\n[/details]`
+    text += `\n[/details]`;
+    text += "\n";
+    text += "https://okonomichiyaki.github.io/josekle/";
     navigator.clipboard.writeText(text);
 }
 function toggleButtons() {

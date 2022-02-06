@@ -2,18 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Josekle</title>
-  <link href="css/style.css" rel="stylesheet" />
+  <meta name="description" content="Guess the hidden joseki. A new puzzle is available each day.">
+  <meta property="og:url" content="https://okonomichiyaki.github.io/josekle/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Josekle - A daily joseki game">
+  <meta property="og:description" content="Guess the hidden joseki. A new puzzle is available each day.">
+  <meta property="og:image" content="https://okonomichiyaki.github.io/josekle/screenshot.png">
+  <link href="css/fill.css" rel="stylesheet" />
   <link href="css/besogo.css" rel="stylesheet" />
   <script src="besogo.all.js"></script>
   <script src="app.js"></script>
   <script src="puzzles.js"></script>
 </head>
 <body>
+<div id="input-board" class="besogo-editor" orient="view" portratio="none" landratio="none" coord="western" panels="control+tree+hint"></div>
 <div id="title"></div>
-<div id="input-board" class="besogo-editor" resize="fixed" coord="western" panels="control+tree"></div>
-<button id="copy-puzzles" class="hide" onclick="copyPuzzles();">copy puzzles</button>
 <div id="output"></div>
+<input id="copy-puzzles" type="button" value="copy puzzles" class="hide" onclick="copyPuzzles();"></button>
 <div id="dictionary-board" class="besogo-viewer hide" resize="fixed" sgf="sgf/dictionary.sgf"></div>
 </body>
 </html>
