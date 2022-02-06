@@ -216,17 +216,17 @@ SOFTWARE.
     fill: #ff474c;
 }
 
-.besogo-correct {
+.besogo-svg-correct {
     stroke: #16a34a;
     stroke-width: 12;
 }
 
-.besogo-hint {
+.besogo-svg-hint {
     stroke: #6d28d9;
     stroke-width: 12;
 }
 
-.besogo-miss {
+.besogo-svg-miss {
     stroke: #e50000;
     stroke-width: 8;
 }

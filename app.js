@@ -157,6 +157,7 @@ function display(hints, message) {
         p.innerHTML += " " + message;
         output.appendChild(p);
     }
+    document.querySelector(".besogo-hint").scrollTop = document.querySelector(".besogo-hint").scrollHeight;
 }
 function checkDictionary(moves) {
     if (!debug) {
