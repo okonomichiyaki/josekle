@@ -19,6 +19,6 @@ body {
     margin: 3px 0px;
 }
 
-input.hide {
+#dictionary-board, input.hide {
     display: none;
 }
