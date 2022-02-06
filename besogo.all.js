@@ -977,9 +977,9 @@ besogo.makeBoardDisplay = function(container, editor) {
 
 besogo.makeHintPanel = function(container, editor) {
     'use strict';
-    container.appendChild(document.getElementById("title"))
-    container.appendChild(document.getElementById("output"))
-    container.appendChild(document.getElementById("copyPuzzles"))
+    container.appendChild(document.getElementById("title"));
+    container.appendChild(document.getElementById("output"));
+    container.appendChild(document.getElementById("copy-puzzles"));
 }
 
 besogo.makeCommentPanel = function(container, editor) {
@@ -3263,7 +3263,7 @@ besogo.svgCircle = function(x, y, color) {
         cy: y,
         r: 38,
         fill: "none",
-        'class': "besogo-correct"
+        'class': "besogo-svg-correct"
     });
 };
 
@@ -3275,7 +3275,7 @@ besogo.svgSquare = function(x, y, color) {
         cy: y,
         r: 38,
         fill: "none",
-        'class': "besogo-hint"
+        'class': "besogo-svg-hint"
     });
 };
 
@@ -3287,7 +3287,7 @@ besogo.svgTriangle = function(x, y, color) {
     return besogo.svgEl("path", {
         d: path,
         fill: "none",
-        'class': "besogo-miss"
+        'class': "besogo-svg-miss"
     });
 };
 

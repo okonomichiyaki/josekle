@@ -11,8 +11,12 @@ body {
     white-space: pre-wrap;
 
     overflow: auto;
-    flex: 1 1 60%;
+    flex: 1 1 35%;
     width: 100%;
+}
+
+#output p {
+    margin: 3px 0px;
 }
 
 input.hide {
