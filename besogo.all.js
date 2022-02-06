@@ -424,7 +424,7 @@ besogo.makeBoardDisplay = function(container, editor) {
 
         TOUCH_FLAG = false; // Flag for touch interfaces
 
-    initializeBoard(editor.getCoordStyle()); // Initialize SVG element and draw the board
+    initializeBoard(editor.getCoordStyle(), editor.getZoom()); // Initialize SVG element and draw the board
     container.appendChild(svg); // Add the SVG element to the document
     editor.addListener(update); // Register listener to handle editor/game state updates
     redrawAll(editor.getCurrent()); // Draw stones, markup and hover layer
@@ -442,8 +442,8 @@ besogo.makeBoardDisplay = function(container, editor) {
     }
 
     // Initializes the SVG and draws the board
-    function initializeBoard(coord) {
-        drawBoard(coord); // Initialize the SVG element and draw the board
+    function initializeBoard(coord, zoom) {
+        drawBoard(coord, zoom); // Initialize the SVG element and draw the board
 
         stoneGroup = besogo.svgEl("g");
         markupGroup = besogo.svgEl("g");
@@ -471,10 +471,10 @@ besogo.makeBoardDisplay = function(container, editor) {
             oldSvg = svg;
 
         // Check if board size has changed
-        if (currentSize.x !== sizeX || currentSize.y !== sizeY || msg.coord) {
+        if (currentSize.x !== sizeX || currentSize.y !== sizeY || msg.coord || msg.zoom) {
             sizeX = currentSize.x;
             sizeY = currentSize.y;
-            initializeBoard(msg.coord || editor.getCoordStyle()); // Reinitialize board
+            initializeBoard(msg.coord || editor.getCoordStyle(), msg.zoom || editor.getZoom());
             container.replaceChild(svg, oldSvg);
             reinit = true; // Flag board redrawn
         }
@@ -499,7 +499,7 @@ besogo.makeBoardDisplay = function(container, editor) {
     }
 
     // Initializes the SVG element and draws the board
-    function drawBoard(coord) {
+    function drawBoard(coord, zoom) {
         var boardWidth,
             boardHeight,
             string = "", // Path string for inner board lines
@@ -509,10 +509,14 @@ besogo.makeBoardDisplay = function(container, editor) {
         boardWidth = 2*BOARD_MARGIN + sizeX*CELL_SIZE;
         boardHeight = 2*BOARD_MARGIN + sizeY*CELL_SIZE;
 
+        var viewBoxWidth = boardWidth / zoom;
+        var viewBoxHeight = boardHeight / zoom;
+        var viewBoxMinX = boardWidth - viewBoxWidth;
+        var viewBoxMinY = 0;
         svg = besogo.svgEl("svg", { // Initialize the SVG element
             width: "100%",
             height: "100%",
-            viewBox: "0 0 " + boardWidth + " " + boardHeight
+            viewBox: `${viewBoxMinX} ${viewBoxMinY} ${viewBoxWidth} ${viewBoxHeight}`
         });
 
         svg.appendChild(besogo.svgEl("rect", { // Fill background color
@@ -1346,7 +1350,7 @@ besogo.makeControlPanel = function(container, editor) {
 
     // Draws the variant style buttons
     function drawStyleButtons() {
-        var svg, element, coordStyleButton;
+        var svg, element, coordStyleButton, zoomInButton, zoomOutButton;
 
         variantStyleButton = document.createElement('button');
         variantStyleButton.onclick = function() {
@@ -1404,6 +1408,18 @@ besogo.makeControlPanel = function(container, editor) {
         svg = makeButtonContainer();
         coordStyleButton.appendChild(svg);
         svg.appendChild(besogo.svgLabel(50, 50, 'black', '四4'));
+
+        zoomInButton = document.createElement('button');
+        zoomInButton.onclick = editor.increaseZoom;
+        zoomInButton.title = 'Zoom in';
+        zoomInButton.appendChild(document.createTextNode('+'));
+        container.appendChild(zoomInButton);
+
+        zoomOutButton = document.createElement('button');
+        zoomOutButton.onclick = editor.decreaseZoom;
+        zoomOutButton.title = 'Zoom out';
+        zoomOutButton.appendChild(document.createTextNode('-'));
+        container.appendChild(zoomOutButton);
     } // END function drawStyleButtons
 
     // Makes an SVG container for the button graphics
@@ -1588,6 +1604,10 @@ besogo.makeEditor = function(sizeX, sizeY) {
         // Order of coordinate systems
         COORDS = 'none numeric western eastern pierre corner eastcor'.split(' '),
         coord = 'none', // Selected coordinate system
+        zoom = 1.6, // Board zoom ratio
+
+        // Possible zoom ratios when using increase and decrease functions
+        ZOOM_STEPS = [1.0, 1.3, 1.5, 1.6, 1.75, 1.9],
 
         // Variant style: even/odd - children/siblings, <2 - show auto markup for variants
         variantStyle = 0; // 0-3, 0 is default
@@ -1603,6 +1623,10 @@ besogo.makeEditor = function(sizeX, sizeY) {
         toggleCoordStyle: toggleCoordStyle,
         getCoordStyle: getCoordStyle,
         setCoordStyle: setCoordStyle,
+        getZoom,
+        setZoom,
+        increaseZoom,
+        decreaseZoom,
         toggleVariantStyle: toggleVariantStyle,
         getVariantStyle: getVariantStyle,
         setVariantStyle: setVariantStyle,
@@ -1680,6 +1704,35 @@ besogo.makeEditor = function(sizeX, sizeY) {
         if (besogo.coord[setCoord]) {
             coord = setCoord;
             notifyListeners({ coord: setCoord });
+        }
+    }
+    
+    // Get the current zoom ratio
+    function getZoom() {
+        return zoom;
+    }
+
+    // Set the zoom ratio
+    function setZoom(setZoom) {
+        zoom = setZoom;
+        notifyListeners({ zoom });
+    }
+
+    // Increases the zoom ratio to the next zoom step
+    function increaseZoom() {
+        let nextStep = ZOOM_STEPS.find((step) => step > zoom);
+        if (nextStep) {
+            setZoom(nextStep);
+        }
+    }
+
+    // Decreases the zoom ratio to the previous zoom step
+    function decreaseZoom() {
+        let index = ZOOM_STEPS.length;
+        while (--index && ZOOM_STEPS[index] >= zoom);
+        
+        if (index > -1) {
+            setZoom(ZOOM_STEPS[index]);
         }
     }
 
