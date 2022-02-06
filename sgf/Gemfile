@@ -1,0 +1,3 @@
+source 'http://rubygems.org'
+gem 'SgfParser', '~> 3.0', '>= 3.0.1'
+gem 'resolv-replace'

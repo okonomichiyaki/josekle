@@ -1,0 +1,17 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    SgfParser (3.0.1)
+    resolv (0.2.1)
+    resolv-replace (0.1.0)
+      resolv
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  SgfParser (~> 3.0, >= 3.0.1)
+  resolv-replace
+
+BUNDLED WITH
+   2.3.3
