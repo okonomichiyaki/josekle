@@ -181,7 +181,6 @@ function submit() {
         console.log("solution: " + pretty_print(solution));
     }
     var hints = document.querySelector("#input-board").editor.check(solution);
-    hints=hints.join("");
     guesses.push(hints);
     var message = "";
     if (moves.length < solution.length) {
@@ -217,7 +216,7 @@ function submit() {
     } else if (!checkDictionary(moves)) {
         message = "Not present in the dictionary?"; 
     }
-    display(hints, message);
+    display(hints.join(""), message);
 }
 
 // utilities for collecting josekis:
