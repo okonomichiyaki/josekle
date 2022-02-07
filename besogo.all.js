@@ -1352,7 +1352,7 @@ besogo.makeControlPanel = function(container, editor) {
 
     // Draws the variant style buttons
     function drawStyleButtons() {
-        var svg, element, coordStyleButton, zoomInButton, zoomOutButton;
+        var svg, element, coordStyleButton, zoomInButton, zoomOutButton, darkThemeButton;
 
         variantStyleButton = document.createElement('button');
         variantStyleButton.onclick = function() {
@@ -1422,6 +1422,17 @@ besogo.makeControlPanel = function(container, editor) {
         zoomOutButton.title = 'Zoom out';
         zoomOutButton.appendChild(document.createTextNode('-'));
         container.appendChild(zoomOutButton);
+
+        darkThemeButton = document.createElement('button');
+        darkThemeButton.onclick = function() {
+            var link = document.getElementById("dark-css-link");
+            link.disabled = !link.disabled;
+        };
+        darkThemeButton.title = 'Toggle dark theme';
+        container.appendChild(darkThemeButton);
+        svg = makeButtonContainer();
+        darkThemeButton.appendChild(svg);
+        svg.appendChild(besogo.svgLabel(50, 50, 'black', '☽'));
     } // END function drawStyleButtons
 
     // Makes an SVG container for the button graphics
