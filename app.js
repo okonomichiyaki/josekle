@@ -5,6 +5,8 @@ const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟣";
 const ROTATE = "🔄";
+
+/* functions for emoji support detection */
 function supportsEmoji (e) {
     const ctx = document.createElement("canvas").getContext("2d");
     ctx.canvas.width = ctx.canvas.height = 1;
@@ -21,9 +23,8 @@ function supportsAll(emojis) {
     return true;
 }
 const CIRCLES = supportsAll(circles);
-var guesses=[];
-var today = getNumber();
 
+/* daily puzzle */
 function getNumber() {
     const re=/puzzle=(\d+)/;
     var m;
@@ -38,6 +39,8 @@ function getNumber() {
 function getSolution() {
     return puzzles[today % puzzles.length];
 }
+
+/* functions to get inputted sequence from besogo */
 function extractMovesFrom(current) {
     var moves=[];
     if (current.markup.length > 0) {
@@ -58,55 +61,7 @@ function pretty_print(moves) {
     return moves.map(move => move.x+"-"+move.y).join(", ");
 }
 
-// OLD functions to check correctness of moves, now using editor-based function
-function isYellow(candidate, solution) {
-    return solution.find(move => move.x===candidate.x && move.y===candidate.y);
-}
-function check(moves, solution) {
-    var output = [];
-    var inputBoard=document.querySelector("#input-board");
-    for (i = 0; i < moves.length; i++) {
-        var move = moves[i];
-        if (i < solution.length && move.x === solution[i].x && move.y === solution[i].y) {
-            output.push(GREEN);
-            // inputBoard.editor.setHint(move.x, move.y, 1);
-        } else if (isYellow(move, solution)) {
-            output.push(YELLOW);
-            // inputBoard.editor.setHint(move.x, move.y, 2);
-        } else {
-            output.push(WHITE);
-            // inputBoard.editor.setHint(move.x, move.y, 3);
-        }
-    }
-    return output;
-}
-
-function reflect(moves) {
-    return moves.map(move => {
-        return {x:move.y, y:move.x};
-    });
-}
-function normalize(moves) {
-    return moves.map(normalize_move);
-}
-function normalize_move(move) {
-    var x = move.x;
-    var y = move.y;
-    if (move.x > 10) {
-        x=19-move.x+1;
-    }
-    if (move.y > 10) {
-        y=19-move.y+1;
-    }
-    return {x:x, y:y};
-}
-function better(a, b) {
-    var ayellows = a.filter(x => x === YELLOW).length;
-    var byellows = b.filter(x => x === YELLOW).length;
-    var agreens = a.filter(x => x === GREEN).length;
-    var bgreens = b.filter(x => x === GREEN).length;
-    return (ayellows + agreens*2) > (byellows + bgreens*2);
-}
+/* functions to handle inputted guesses and update state on success */
 function wasCorrect(hints, solution) {
     // Considers guess to be correct if the solution is a prefix
     for (i=0; i < hints.length && i < solution.length; i++) {
@@ -224,28 +179,6 @@ function submit() {
     display(hints.join(""), message);
 }
 
-// utilities for collecting josekis:
-function copyPuzzles() {
-    var inputBoard=document.querySelector("#input-board");
-    var root=inputBoard.editor.getRoot();
-    var leaves=[];
-    var nodes=[];
-    if (root.children.length>0) {
-        nodes.push(root);
-    }
-    while (nodes.length>0) {
-        var node = nodes.pop();
-        if (node.children.length===0) {
-            leaves.push(node);
-        } else {
-            node.children.forEach(child => { nodes.push(child) });
-        }
-    }
-    console.log("found " + leaves.length + " leaves");
-    var collection = leaves.map(extractMovesFrom).map(JSON.stringify);
-    var text = collection.join(",\n");
-    navigator.clipboard.writeText(text);
-}
 function startOneColorMode() {
     const solution = getSolution();
     const editor = document.querySelector("#input-board").editor;
@@ -255,6 +188,10 @@ function startOneColorMode() {
     }
     editor.toggleVariantStyle(); // toggles a redraw
 }
+
+var guesses=[];
+var today = getNumber();
+
 window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
