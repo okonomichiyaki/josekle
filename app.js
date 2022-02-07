@@ -180,7 +180,7 @@ function submit() {
             }
         }
         toggleButtons();
-        storageClear();
+        storageClear(getTitle());
         storageSave(getTitle(),{
             submissions: submissions
         });
@@ -215,9 +215,13 @@ function storageLoad(key) {
     }
     return null;
 }
-function storageClear() {
+function storageClear(key) {
     if (localStorage) {
-        localStorage.clear();
+        if (key) {
+            localStorage.setItem(key, null);
+        } else {
+            localStorage.clear();
+        }
     }
 }
 function tryRestore() {
@@ -225,7 +229,7 @@ function tryRestore() {
         return false;
     }
     const dark = storageLoad("dark");
-    if (dark) {
+    if (dark === "on") {
         document.querySelector('button[title="Toggle dark theme"]').click();
     }
     const zoom = storageLoad("zoom");
@@ -260,8 +264,9 @@ window.onload = function() {
         if (msg.zoom) {
             storageSave("zoom", msg.zoom);
         }
-        if (msg.dark) {
-            storageSave("dark", msg.dark);
+        if (msg.dark === false || msg.dark === true) {
+            const value = msg.dark ? "on" : "off";
+            storageSave("dark", value);
         }
     })
     const restored = tryRestore();
