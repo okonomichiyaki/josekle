@@ -1,4 +1,5 @@
 const debug = window.location.href.includes("debug=true");
+const oneColor = window.location.href.includes("oneColor=true");
 var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
@@ -179,11 +180,12 @@ function submit() {
         return;
     }
     var solution = getSolution();
+    var hints = document.querySelector("#input-board").editor.check(solution);
     if (debug) {
         console.log("guess: " + pretty_print(moves));
         console.log("solution: " + pretty_print(solution));
+        console.log(hints);
     }
-    var hints = document.querySelector("#input-board").editor.check(solution);
     guesses.push(hints);
     var message = "";
     if (moves.length < solution.length) {
@@ -244,10 +246,22 @@ function copyPuzzles() {
     var text = collection.join(",\n");
     navigator.clipboard.writeText(text);
 }
+function startOneColorMode() {
+    const solution = getSolution();
+    const editor = document.querySelector("#input-board").editor;
+    for (var i = solution.length - 1; i >= 0; i--) {
+        var move = solution[i];
+        editor.getRoot().addMarkup(move.x,move.y,2);
+    }
+    editor.toggleVariantStyle(); // toggles a redraw
+}
 window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText="Josekle #"+today;
     if (debug) {
         document.querySelector("#copy-puzzles").classList.remove("hide");
+    }
+    if (oneColor) {
+        startOneColorMode();
     }
 };
