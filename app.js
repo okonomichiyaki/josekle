@@ -78,7 +78,7 @@ function wasCorrect(hints, solution) {
     return solution.length <= hints.length;
 }
 function share() {
-    var text = `[details="Josekle #${today}"]\n`;
+    var text = `[details="${getTitle()}"]\n`;
     text += guesses.map(guess => guess.join("")).join("\n");
     text += `\n[/details]`;
     text += "\n";
