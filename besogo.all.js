@@ -983,7 +983,6 @@ besogo.makeHintPanel = function(container, editor) {
     'use strict';
     container.appendChild(document.getElementById("title"));
     container.appendChild(document.getElementById("output"));
-    container.appendChild(document.getElementById("copy-puzzles"));
 }
 
 besogo.makeCommentPanel = function(container, editor) {
@@ -1427,6 +1426,7 @@ besogo.makeControlPanel = function(container, editor) {
         darkThemeButton.onclick = function() {
             var link = document.getElementById("dark-css-link");
             link.disabled = !link.disabled;
+            storageSave("dark", !link.disabled); // if, after toggling, link is NOT disabled, dark mode is ON
         };
         darkThemeButton.title = 'Toggle dark theme';
         container.appendChild(darkThemeButton);

@@ -36,8 +36,11 @@ function getNumber() {
     const today = new Date();
     return Math.ceil(Math.abs((start - today) / dayMillis));
 }
+function getTitle() {
+    return "Josekle #"+getNumber();
+}
 function getSolution() {
-    return puzzles[today % puzzles.length];
+    return puzzles[getNumber() % puzzles.length];
 }
 
 /* functions to get inputted sequence from besogo */
@@ -141,6 +144,7 @@ function submit() {
         console.log("solution: " + pretty_print(solution));
         console.log(hints);
     }
+    submissions.push(moves);
     guesses.push(hints);
     var message = "";
     if (moves.length < solution.length) {
@@ -173,6 +177,10 @@ function submit() {
             }
         }
         toggleButtons();
+        storageClear();
+        storageSave(getTitle(),{
+            submissions: submissions
+        });
     } else if (!checkDictionary(moves)) {
         message = "Not present in the dictionary?"; 
     }
@@ -189,16 +197,59 @@ function startOneColorMode() {
     editor.toggleVariantStyle(); // toggles a redraw
 }
 
-var guesses=[];
-var today = getNumber();
-
+/* functions to save and restore previous correct attempt */
+function storageSave(key, val) {
+    if (localStorage) {
+        localStorage.setItem(key, JSON.stringify(val));
+    }
+}
+function storageLoad(key) {
+    if (localStorage) {
+        const json = localStorage.getItem(key);
+        if (json) {
+            return JSON.parse(json);
+        }
+    }
+    return null;
+}
+function storageClear() {
+    if (localStorage) {
+        localStorage.clear();
+    }
+}
+function tryRestore() {
+    if (!debug) {
+        return false;
+    }
+    const dark = storageLoad("dark");
+    if (dark) {
+        document.querySelector('button[title="Toggle dark theme"]').click();
+    }
+    const previous = storageLoad(getTitle());
+    if (previous && previous["submissions"] !== null && previous["submissions"].length > 0) {
+        const submissions = previous["submissions"];
+        const editor = document.querySelector("#input-board").editor;
+        for (var i = 0; i < submissions.length; i++) {
+            const submission = submissions[i];
+            submission.forEach(move => {
+                editor.click(move.x, move.y, false, false);
+            });
+            document.querySelector("#Submit").click();
+            if (i < submissions.length - 1) {
+                editor.prevNode(-1);
+            }
+        };
+        return true;
+    }
+    return false;
+}
+const submissions = [];
+const guesses = [];
 window.onload = function() {
     besogo.autoInit();
-    document.querySelector("div#title").innerText="Josekle #"+today;
-    if (debug) {
-        document.querySelector("#copy-puzzles").classList.remove("hide");
-    }
-    if (oneColor) {
+    document.querySelector("div#title").innerText=getTitle();
+    const restored = tryRestore();
+    if (oneColor && !restored) {
         startOneColorMode();
     }
 };
