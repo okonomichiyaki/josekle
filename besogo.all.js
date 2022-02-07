@@ -468,6 +468,12 @@ besogo.makeBoardDisplay = function(container, editor) {
             } else {
                 editor.prevNode(1);
             }
+        } else {
+            if ( yDiff > 0 ) {
+                editor.nextSibling(1);
+            } else {
+                editor.nextSibling(-1);
+            }
         }
 
         xDown = null;
@@ -1330,12 +1336,13 @@ besogo.makeControlPanel = function(container, editor) {
                 editor.prevNode(-1);
             })
         );
+        /* Removed jump 10 buttons
         leftElements.push(makeNavButton('Jump back',
             '95,10 50,50 50,10 5,50 50,90 50,50 95,90',
             function() {
                 editor.prevNode(10);
             })
-        );
+        ); */
         leftElements.push(makeNavButton('Previous node', '85,10 85,90 15,50', function() {
             editor.prevNode(1);
         }));
@@ -1343,12 +1350,13 @@ besogo.makeControlPanel = function(container, editor) {
         rightElements.push(makeNavButton('Next node', '15,10 15,90 85,50', function() {
             editor.nextNode(1);
         }));
+        /* Removed jump 10 buttons
         rightElements.push(makeNavButton('Jump forward',
             '5,10 50,50 50,10 95,50 50,90 50,50 5,90',
             function() {
                 editor.nextNode(10);
             })
-        );
+        ); */
         rightElements.push(makeNavButton('Last node',
             '95,10 95,90 75,90 75,50 5,90 5,10 75,50 75,10',
             function() {
@@ -1452,7 +1460,7 @@ besogo.makeControlPanel = function(container, editor) {
         zoomOutButton = document.createElement('button');
         zoomOutButton.onclick = editor.decreaseZoom;
         zoomOutButton.title = 'Zoom out';
-        zoomOutButton.appendChild(document.createTextNode('-'));
+        zoomOutButton.appendChild(document.createTextNode('−'));
         container.appendChild(zoomOutButton);
 
         darkThemeButton = document.createElement('button');
