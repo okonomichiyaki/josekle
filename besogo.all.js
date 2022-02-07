@@ -422,7 +422,9 @@ besogo.makeBoardDisplay = function(container, editor) {
 
         randIndex, // Random index for stone images
 
-        TOUCH_FLAG = false; // Flag for touch interfaces
+        TOUCH_FLAG = false, // Flag for touch interfaces
+        xDown = null, // Touch event start flags
+        yDown = null;
 
     initializeBoard(editor.getCoordStyle(), editor.getZoom()); // Initialize SVG element and draw the board
     container.appendChild(svg); // Add the SVG element to the document
@@ -439,6 +441,37 @@ besogo.makeBoardDisplay = function(container, editor) {
         svg.removeChild(hoverGroup); // Remove hover group from SVG
         // Remove self when done
         container.removeEventListener('touchstart', setTouchFlag);
+    }
+
+    container.addEventListener('touchstart', handleTouchStart, false);
+    container.addEventListener('touchmove', handleTouchMove, false);
+
+    function handleTouchStart(evt) {
+        xDown = evt.touches[0].clientX;
+        yDown = evt.touches[0].clientY;
+    }
+
+    function handleTouchMove(evt) {
+        var xUp = evt.touches[0].clientX,
+            yUp = evt.touches[0].clientY,
+            xDiff, yDiff;
+
+        if ( ! xDown || ! yDown ) {
+            return;
+        }
+        xDiff = xDown - xUp;
+        yDiff = yDown - yUp;
+
+        if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
+            if ( xDiff > 0 ) {
+                editor.nextNode(1);
+            } else {
+                editor.prevNode(1);
+            }
+        }
+
+        xDown = null;
+        yDown = null;
     }
 
     // Initializes the SVG and draws the board
