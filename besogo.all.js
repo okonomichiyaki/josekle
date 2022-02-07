@@ -1213,7 +1213,9 @@ besogo.makeControlPanel = function(container, editor) {
     drawStyleButtons();
 
     makeButtonText('Delete', 'Remove branch', editor.cutCurrent);
-    makeButtonText('Submit', 'Submit guess', submit);
+    if (typeof submit !== "undefined") {
+        makeButtonText('Submit', 'Submit guess', submit);
+    }
 
     // Creates text button
     function makeButtonText(text, tip, callback) {
