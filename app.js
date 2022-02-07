@@ -55,6 +55,9 @@ function extractMovesFrom(current) {
     }
     return moves.reverse();
 }
+function getInputEditor() {
+    return document.querySelector("#input-board").editor;
+}
 function extractMoves() {
     var inputBoard=document.querySelector("#input-board");
     var current=inputBoard.editor.getCurrent();
@@ -138,7 +141,7 @@ function submit() {
         return;
     }
     var solution = getSolution();
-    var hints = document.querySelector("#input-board").editor.check(solution);
+    var hints = getInputEditor().check(solution);
     if (debug) {
         console.log("guess: " + pretty_print(moves));
         console.log("solution: " + pretty_print(solution));
@@ -189,7 +192,7 @@ function submit() {
 
 function startOneColorMode() {
     const solution = getSolution();
-    const editor = document.querySelector("#input-board").editor;
+    const editor = getInputEditor();
     for (var i = solution.length - 1; i >= 0; i--) {
         var move = solution[i];
         editor.getRoot().addMarkup(move.x,move.y,2);
@@ -225,10 +228,15 @@ function tryRestore() {
     if (dark) {
         document.querySelector('button[title="Toggle dark theme"]').click();
     }
+    const zoom = storageLoad("zoom");
+    if (zoom) {
+        const editor = getInputEditor();
+        editor.setZoom(zoom);
+    }
     const previous = storageLoad(getTitle());
     if (previous && previous["submissions"] !== null && previous["submissions"].length > 0) {
         const submissions = previous["submissions"];
-        const editor = document.querySelector("#input-board").editor;
+        const editor = getInputEditor();
         for (var i = 0; i < submissions.length; i++) {
             const submission = submissions[i];
             submission.forEach(move => {
@@ -248,6 +256,14 @@ const guesses = [];
 window.onload = function() {
     besogo.autoInit();
     document.querySelector("div#title").innerText=getTitle();
+    getInputEditor().addListener(function(msg) {
+        if (msg.zoom) {
+            storageSave("zoom", msg.zoom);
+        }
+        if (msg.dark) {
+            storageSave("dark", msg.dark);
+        }
+    })
     const restored = tryRestore();
     if (oneColor && !restored) {
         startOneColorMode();

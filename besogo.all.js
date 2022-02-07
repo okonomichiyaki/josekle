@@ -1426,7 +1426,7 @@ besogo.makeControlPanel = function(container, editor) {
         darkThemeButton.onclick = function() {
             var link = document.getElementById("dark-css-link");
             link.disabled = !link.disabled;
-            storageSave("dark", !link.disabled); // if, after toggling, link is NOT disabled, dark mode is ON
+            editor.notifyListeners({ dark: !link.disabled }) // if, after toggling, link is NOT disabled, dark mode is ON
         };
         darkThemeButton.title = 'Toggle dark theme';
         container.appendChild(darkThemeButton);
@@ -1626,8 +1626,9 @@ besogo.makeEditor = function(sizeX, sizeY) {
         variantStyle = 0; // 0-3, 0 is default
 
     return {
-        navigate: navigate,// expose navigate for josekle mirror board
+        navigate: navigate,// expose navigate for josekle dictionary board
         addListener: addListener,
+        notifyListeners, notifyListeners,
         click: click,
         nextNode: nextNode,
         prevNode: prevNode,
