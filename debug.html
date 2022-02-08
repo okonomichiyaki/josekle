@@ -25,7 +25,7 @@
   <script>
     window.onload = function() {
         const nodeId=parseInt(document.location.href.split("#")[1]);
-        fetch('/sgf/puzzles.json')
+        fetch('/josekle/sgf/puzzles.json')
             .then(response => response.json())
             .then(puzzles => {
                 const puzzle = puzzles[Math.floor(Math.random()*puzzles.length)];
