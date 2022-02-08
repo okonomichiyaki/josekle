@@ -40,7 +40,9 @@
                 //besogoBoard.panels="control+tree";
                 document.querySelector("div#container").appendChild(besogoBoard);
                 besogo.autoInit();
-                while (undefined === document.querySelector('#input-board').editor.nextNode(1)){}
+                const editor = document.querySelector('#input-board').editor;
+                while (undefined === editor.nextNode(1)){}
+                editor.setZoom(1.0);
             });
     }
   </script>
