@@ -36,8 +36,11 @@ function getNumber() {
     const today = new Date();
     return Math.ceil(Math.abs((start - today) / dayMillis));
 }
-function getTitle() {
-    return "Josekle #"+getNumber();
+function getTitle(n) {
+    if (typeof n === "undefined") {
+        n=0;
+    }
+    return "Josekle #"+(getNumber()+n);
 }
 function getSolution() {
     return puzzles[getNumber() % puzzles.length];
@@ -123,6 +126,13 @@ function display(hints, message) {
     }
     document.querySelector(".besogo-hint").scrollTop = document.querySelector(".besogo-hint").scrollHeight;
 }
+function isDictionaryReady() {
+    const dict = document.querySelector("#dictionary-board").editor;
+    // the dictionary should be ready if 4-4 is navigable:
+    const ready = dict.navigate(16, 4, false);
+    dict.prevNode(-1);
+    return ready;
+}
 function checkDictionary(moves) {
     if (!debug) {
         return true;
@@ -155,7 +165,8 @@ function submit() {
     } else if (moves.length > solution.length) {
         message = "Too many moves";
     }
-    if (wasCorrect(hints, solution)) {
+    const solved = wasCorrect(hints, solution);
+    if (solved) {
         if (hints.length > solution.length) {
             message = " Good Enough!";
         } else {
@@ -180,13 +191,13 @@ function submit() {
             }
         }
         toggleButtons();
-        storageClear(getTitle());
-        storageSave(getTitle(),{
-            submissions: submissions
-        });
     } else if (!checkDictionary(moves)) {
         message = "Not present in the dictionary?"; 
     }
+    storageSave(getTitle(),{
+        submissions: submissions,
+        solved: solved
+    });
     display(hints.join(""), message);
 }
 
@@ -200,7 +211,7 @@ function startOneColorMode() {
     editor.toggleVariantStyle(); // toggles a redraw
 }
 
-/* functions to save and restore previous correct attempt */
+/* functions to save and restore previous attempts */
 function storageSave(key, val) {
     if (localStorage) {
         localStorage.setItem(key, JSON.stringify(val));
@@ -218,7 +229,7 @@ function storageLoad(key) {
 function storageClear(key) {
     if (localStorage) {
         if (key) {
-            localStorage.setItem(key, null);
+            localStorage.removeItem(key);
         } else {
             localStorage.clear();
         }
@@ -237,21 +248,30 @@ function tryRestore() {
         const editor = getInputEditor();
         editor.setZoom(zoom);
     }
-    const previous = storageLoad(getTitle());
-    if (previous && previous["submissions"] !== null && previous["submissions"].length > 0) {
-        const submissions = previous["submissions"];
+    const saved = storageLoad(getTitle());
+    if (saved && saved["submissions"] !== null && saved["submissions"].length > 0) {
+        const submissions = saved["submissions"];
         const editor = getInputEditor();
         for (var i = 0; i < submissions.length; i++) {
             const submission = submissions[i];
             submission.forEach(move => {
                 editor.click(move.x, move.y, false, false);
             });
-            document.querySelector("#Submit").click();
+            submit();
+            // after replaying each but the last, reset to root to keep replaying:
             if (i < submissions.length - 1) {
                 editor.prevNode(-1);
+            } else {
+                // for the last replay, if unsolved, also reset
+                // if solved, will not reset to display the solution
+                if (!saved["solved"]) {
+                    editor.prevNode(-1);
+                }
             }
         };
         return true;
+    } else {
+        storageClear(getTitle(-1));
     }
     return false;
 }
@@ -269,8 +289,13 @@ window.onload = function() {
             storageSave("dark", value);
         }
     })
-    const restored = tryRestore();
-    if (oneColor && !restored) {
-        startOneColorMode();
-    }
+    var wait = setInterval(function () {
+        if (isDictionaryReady()) {
+            const restored = tryRestore();
+            if (oneColor && !restored) {
+                startOneColorMode();
+            }
+            clearInterval(wait);
+        }
+    }, 100);
 };
