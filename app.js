@@ -82,6 +82,20 @@ function wasCorrect(hints, solution) {
     return solution.length <= hints.length;
 }
 function share() {
+    var text = getTitle() + "\n";
+    text += guesses.map(guess => guess.join("")).join("\n");
+    text += "\n";
+    text += "https://okonomichiyaki.github.io/josekle/";
+    navigator.clipboard.writeText(text);
+}
+function shareDiscord() {
+    var text = getTitle() + "\n";
+    text += guesses.map(guess => "||" + guess.join("") + "||").join("\n");
+    text += "\n";
+    text += "https://okonomichiyaki.github.io/josekle/";
+    navigator.clipboard.writeText(text);
+}
+function shareDiscourse() {
     var text = `[details="${getTitle()}"]\n`;
     text += guesses.map(guess => guess.join("")).join("\n");
     text += `\n[/details]`;
@@ -89,12 +103,25 @@ function share() {
     text += "https://okonomichiyaki.github.io/josekle/";
     navigator.clipboard.writeText(text);
 }
+function makeButton(value, title, onclick) {
+    element = document.createElement('input');
+    element.type = 'button';
+    element.value = value;
+    element.title = title;
+    element.onclick = onclick;
+    return element;
+}
 function toggleButtons() {
-    var button = document.querySelector("input#Submit");
-    button.value = "Share";
-    button.id = "Share";
-    button.title = "Share results via clipboard";
-    button.onclick = share;
+    document.querySelector('#output').appendChild(
+        makeButton("Share (Discourse)", "Copy results to clipboard with Discourse spoiler tags", shareDiscourse)
+    );
+    document.querySelector('#output').appendChild(
+        makeButton("Share (Discord)", "Copy results to clipboard with Discord spoiler tags", shareDiscord)
+    );
+    document.querySelector('#output').appendChild(
+        makeButton("Share", "Copy results to clipboard without spoiler tags", share)
+    );
+    document.querySelector('#Submit').classList.add("hide");
 }
 function display(hints, message) {
     var output = document.querySelector("#output");
@@ -191,7 +218,6 @@ function submit() {
                     message = " Phew";
             }
         }
-        toggleButtons();
     } else if (!checkDictionary(moves)) {
         message = "Not present in the dictionary?"; 
     }
@@ -200,6 +226,9 @@ function submit() {
         solved: solved
     });
     display(hints.join(""), message);
+    if (solved) {
+        toggleButtons();
+    }
 }
 
 function startOneColorMode() {
