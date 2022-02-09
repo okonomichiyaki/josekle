@@ -1,6 +1,9 @@
 #dictionary-board, #input-board {
     height: 750px; width: 525px
 }
-#dictionary-board, .hide {
+#dictionary-board, .none {
     display: none;
+}
+.hidden {
+    visibility: hidden;
 }

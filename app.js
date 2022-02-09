@@ -121,7 +121,7 @@ function toggleButtons() {
     document.querySelector('#output').appendChild(
         makeButton("Share", "Copy results to clipboard without spoiler tags", share)
     );
-    document.querySelector('#Submit').classList.add("hide");
+    document.querySelector('#Submit').classList.add("hidden");
 }
 function display(hints, message) {
     var output = document.querySelector("#output");
