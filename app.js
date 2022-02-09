@@ -1,5 +1,6 @@
 const debug = window.location.href.includes("debug=true");
 const oneColor = window.location.href.includes("oneColor=true");
+const clearStorage = window.location.href.includes("clearStorage=true");
 var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
@@ -236,9 +237,6 @@ function storageClear(key) {
     }
 }
 function tryRestore() {
-    if (!debug) {
-        return false;
-    }
     const dark = storageLoad("dark");
     if (dark === "on") {
         document.querySelector('button[title="Toggle dark theme"]').click();
@@ -278,6 +276,9 @@ function tryRestore() {
 const submissions = [];
 const guesses = [];
 window.onload = function() {
+    if (clearStorage) {
+        localStorage.clear();
+    }
     besogo.autoInit();
     document.querySelector("div#title").innerText=getTitle();
     getInputEditor().addListener(function(msg) {
