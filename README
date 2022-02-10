@@ -2,12 +2,3 @@ Prototype joseki guessing game inspired by an ubiquitous word game
 https://okonomichiyaki.github.io/josekle/
 
 Uses BesoGo: https://yewang.github.io/besogo/
-
-The following images are from the [go-assets](https://github.com/atarnowsky/go-assets) repository, available under a [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/) license.
-Copyright (C) 2016 Andreas Tarnowsky <andreas.tarnowsky@googlemail.com>
-- 4 black stone images `img/black0.png` ... `img/black3.png`
-- 11 white stone images `img/white0.png` ... `img/white10.png`
-
-Board texture `img/wood.jpg` is courtesy of tozgrec (OGS user).
-
-Icon design by Gooplet (OGS user).
