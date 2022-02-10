@@ -38,6 +38,7 @@ SOFTWARE.
     padding: 0px;
     background: #d8dcd6;
     font-size: 12pt;
+    border-color: #f5f5f5 #e6e6e6 #e6e6e6 #f5f5f5;
 }
 
 .besogo-container input {
@@ -46,6 +47,7 @@ SOFTWARE.
 
 .besogo-container input[type='button'] {
     background: #d8dcd6;
+    border-color: #f5f5f5 #e6e6e6 #e6e6e6 #f5f5f5;
 }
 
 .besogo-container input[type='text'] {
@@ -173,7 +175,7 @@ SOFTWARE.
 /* Flat board theme */
 
 .besogo-svg-board {
-    fill: #e0bb6c;
+    fill: #ebb660;
 }
 
 .besogo-svg-lines {
