@@ -90,8 +90,9 @@ function share() {
 }
 function shareDiscord() {
     var text = getTitle() + "\n";
-    text += guesses.map(guess => "||" + guess.join("") + "||").join("\n");
-    text += "\n";
+    text += "||";
+    text += guesses.map(guess => guess.join("")).join("\n");
+    text += "||\n";
     text += "https://okonomichiyaki.github.io/josekle/";
     navigator.clipboard.writeText(text);
 }
