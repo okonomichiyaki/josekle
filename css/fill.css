@@ -7,6 +7,13 @@ html, body {
     width: 100vw;
 }
 
+@-moz-document url-prefix() {
+    body, html {
+        height: 100%;
+        width: 100%;
+    }
+}
+
 .besogo-container {
     height: 100%;
     width: 100%;
@@ -23,7 +30,8 @@ html, body {
 }
 
 #output p {
-    margin: 3px 0px;
+    margin: 0px;
+    padding: 1px 0px;
 }
 
 #dictionary-board, .none {
