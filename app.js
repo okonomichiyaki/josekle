@@ -112,6 +112,9 @@ function makeButton(value, title, onclick) {
     element.onclick = onclick;
     return element;
 }
+function scrollHints() {
+    document.querySelector(".besogo-hint").scrollTop = document.querySelector(".besogo-hint").scrollHeight;
+}
 function toggleButtons() {
     document.querySelector('#output').appendChild(
         makeButton("Share (Discourse)", "Copy results to clipboard with Discourse spoiler tags", shareDiscourse)
@@ -123,6 +126,7 @@ function toggleButtons() {
         makeButton("Share", "Copy results to clipboard without spoiler tags", share)
     );
     document.querySelector('#Submit').classList.add("hidden");
+    scrollHints();
 }
 function display(hints, message) {
     var output = document.querySelector("#output");
@@ -153,7 +157,7 @@ function display(hints, message) {
         p.innerHTML += " " + message;
         output.appendChild(p);
     }
-    document.querySelector(".besogo-hint").scrollTop = document.querySelector(".besogo-hint").scrollHeight;
+    scrollHints();
 }
 function isDictionaryReady() {
     const dict = document.querySelector("#dictionary-board").editor;
