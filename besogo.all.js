@@ -121,65 +121,41 @@ besogo.create = function(container, options) {
         }
     }
 
-    options.resize = options.resize || 'auto';
-    if (options.resize === 'auto') { // Add auto-resizing unless resize option is truthy
+
+    if (options.resize === 'fixed') {
+        setDimensions(container.clientWidth, container.clientHeight);
+    } else { // Add auto-resizing unless resize option is "fixed"
         resizer = function() {
-            var windowHeight = window.innerHeight, // Viewport height
+            var // height = window.innerHeight, // Viewport height
+                height = parseFloat(getComputedStyle(container.parentElement).height),
                 // Calculated width of parent element
-                parentWidth = parseFloat(getComputedStyle(container.parentElement).width),
-                maxWidth = +(options.maxwidth || -1),
-                orientation = options.orient || 'auto',
+                width = parseFloat(getComputedStyle(container.parentElement).width),
 
-                portraitRatio = +(options.portratio || 200) / 100,
-                landscapeRatio = +(options.landratio || 200) / 100,
                 minPanelsWidth = +(options.minpanelswidth || 350),
-                minPanelsHeight = +(options.minpanelsheight || 400),
-                minLandscapeWidth = +(options.transwidth || 600),
+                minPanelsHeight = +(options.minpanelsheight || 350),
 
-                // Initial width parent
-                width = (maxWidth > 0 && maxWidth < parentWidth) ? maxWidth : parentWidth,
-                height; // Initial height is undefined
+                // Calculated dimensions for the panels div
+                panelsWidth,
+                panelsHeight;
 
-            // Determine orientation if 'auto' or 'view'
-            if (orientation !== 'portrait' && orientation !== 'landscape') {
-                if (width < minLandscapeWidth || (orientation === 'view' && width < windowHeight)) {
-                    orientation = 'portrait';
-                } else {
-                    orientation = 'landscape';
-                }
+            if (width >= height) { // Landscape mode
+                container.style['flex-direction'] = 'row';
+                panelsWidth = (width - height >= minPanelsWidth) ? (width - height) : minPanelsWidth;
+                panelsDiv.style.height = height + 'px';
+                panelsDiv.style.width = panelsWidth + 'px';
+                boardDiv.style.height = height + 'px';
+                boardDiv.style.width = (width - panelsWidth) + 'px';
+            } else { // Portrait mode
+                container.style['flex-direction'] = 'column';
+                panelsHeight = (height - width >= minPanelsHeight) ? (height - width) : minPanelsHeight;
+                panelsDiv.style.height = panelsHeight + 'px';
+                panelsDiv.style.width = width + 'px';
+                boardDiv.style.height = (height - panelsHeight) + 'px';
+                boardDiv.style.width = width + 'px';
             }
-
-            if (orientation === 'portrait') { // Portrait mode
-                if (!isNaN(portraitRatio)) {
-                    height = portraitRatio * width;
-                    if (panelsDiv) {
-                        height = (height - width < minPanelsHeight) ? width + minPanelsHeight : height;
-                    }
-                } else {
-                    height = windowHeight;
-                }
-            } else if (orientation === 'landscape') { // Landscape mode
-                if (!panelsDiv) { // No panels div
-                    height = width; // Square overall
-                } else if (isNaN(landscapeRatio)) {
-                    height = windowHeight;
-                } else { // Otherwise use ratio
-                    height = width / landscapeRatio;
-                }
-
-                if (panelsDiv) {
-                    // Reduce height to ensure minimum width of panels div
-                    height = (width < height + minPanelsWidth) ? (width - minPanelsWidth) : height;
-                }
-            }
-
-            setDimensions(width, height);
-            container.style.width = width + 'px';
         };
         window.addEventListener("resize", resizer);
         resizer(); // Initial div sizing
-    } else if (options.resize === 'fixed') {
-        setDimensions(container.clientWidth, container.clientHeight);
     }
 
     // Sets dimensions with optional height param
