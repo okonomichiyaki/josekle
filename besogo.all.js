@@ -131,14 +131,14 @@ besogo.create = function(container, options) {
                 // Calculated width of parent element
                 width = parseFloat(getComputedStyle(container.parentElement).width),
 
-                minPanelsWidth = +(options.minpanelswidth || 250),
-                minPanelsHeight = +(options.minpanelsheight || 250),
+                minPanelsWidth = +(options.minpanelswidth || 350),
+                minPanelsHeight = +(options.minpanelsheight || 350),
 
                 // Calculated dimensions for the panels div
                 panelsWidth,
                 panelsHeight;
 
-            if (width > height) { // Landscape mode
+            if (width >= height) { // Landscape mode
                 container.style['flex-direction'] = 'row';
                 panelsWidth = (width - height >= minPanelsWidth) ? (width - height) : minPanelsWidth;
                 panelsDiv.style.height = height + 'px';
