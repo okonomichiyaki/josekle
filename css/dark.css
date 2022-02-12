@@ -53,11 +53,13 @@
 
 .besogo-container button {
     background: #607c8e;
+    color: black;
     border-color: #7fa3ba #3e515c #3e515c #7fa3ba;
 }
 
 .besogo-container input[type='button'] {
     background: #607c8e;
+    color: black;
     border-color: #7fa3ba #3e515c #3e515c #7fa3ba;
 }
 
