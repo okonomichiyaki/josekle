@@ -55,43 +55,19 @@ lengths={}
 lt=0
 gt=0
 files = Dir.glob(ARGV[0]+"/*.json")
+already = [20886,31293,31369,22707,29402,27609,18727,22297,16028,24774,22739,30899,31223,31289] # josekles 1-14
 positions=files.map { |file| file_to_explorer(file) }
-hard = positions.filter { |position| position.joseki? && !position.contains_pass? }
+            .filter { |position| !position.contains_pass? }
+            .filter { |position| !already.include?(position.node_id.to_i) }
+hard = positions.filter { |position| position.joseki? }
         .map { |position| oje_string_to_puzzle(position.node_id, position.oje_string) }
 easy = positions.filter do |position|
     length=oje_string_to_list(position.oje_string).length
-    (length < 10 && position.joseki? || position.basic?) && !position.contains_pass?
+    length < 10 && position.joseki? || position.basic?
 end.map { |position| oje_string_to_puzzle(position.node_id, position.oje_string) }
-# all.each do |position|
-#         length=oje_string_to_list(position.oje_string).length
-#         if length < 10 || position.basic?
-#             lt=lt+1
-#         else
-#             gt=gt+1
-#         end
-#         if !lengths[length]
-#             lengths[length]=0
-#         end
-#         lengths[length]=lengths[length]+1
-#     end
-#     .map do |position|
-#         play = position.oje_string
-#         sgf = oje_string_to_sgf(play)
-#         out = {}
-#         out["node_id"] = position.node_id
-#         out["sgf"] = sgf
-#         #out["length"] = nodes.length + 1
-#         out
-#     end
-# print JSON.unparse(josekis)
-#lengths.sort.each do |k,v|
-#    puts "k=#{k},v=#{v}"
-#end
 
 puts "hard=#{hard.length}"
 puts "easy=#{easy.length}"
-#puts "basic=#{basic.length}"
-#puts "lt=#{lt},gt=#{gt}"
 
 save_as_js(hard.shuffle, "hardPuzzles", "../hard.js")
 save_as_js(easy.shuffle, "easyPuzzles", "../easy.js")
