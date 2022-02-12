@@ -42,7 +42,11 @@ function getTitle(n) {
     if (typeof n === "undefined") {
         n=0;
     }
-    return "Josekle #"+(getNumber()+n);
+    var difficulty = "";
+    if (hardMode) {
+        difficulty = " (hard)";
+    }
+    return "Josekle #"+(getNumber()+n)+difficulty;
 }
 function getSolution() {
     const n = getNumber();
@@ -139,6 +143,18 @@ function toggleButtons() {
     document.querySelector('#Submit').classList.add("hidden");
     scrollHints();
 }
+function showExplorerLink(nodeId) {
+    if (nodeId === null || nodeId === undefined) { // old puzzles don't have node
+        return;
+    }
+    const output = document.querySelector("#output");
+    const a = document.createElement("a");
+    a.href = "https://online-go.com/joseki/" + nodeId;
+    a.innerText = "View on OGS Joseki Explorer";
+    const p = document.createElement("p");
+    p.appendChild(a);
+    output.appendChild(p);
+}
 function display(hints, message) {
     var output = document.querySelector("#output");
     var p = document.createElement("p");
@@ -213,26 +229,26 @@ function submit() {
     const solved = wasCorrect(hints, solution);
     if (solved) {
         if (hints.length > solution.length) {
-            message = " Good Enough!";
+            message = "Good Enough!";
         } else {
             switch(guesses.length) {
                 case 1:
-                    message = " Genius";
+                    message = "Genius";
                     break;
                 case 2:
-                    message = " Magnificent";
+                    message = "Magnificent";
                     break;
                 case 3:
-                    message = " Impressive";
+                    message = "Impressive";
                     break;
                 case 4:
-                    message = " Splendid";
+                    message = "Splendid";
                     break;
                 case 5:
-                    message = " Great";
+                    message = "Great";
                     break;
                 default:
-                    message = " Phew";
+                    message = "Phew";
             }
         }
     } else if (!checkDictionary(moves)) {
@@ -240,11 +256,12 @@ function submit() {
     }
     storageSave(getTitle(),{
         submissions: submissions,
-        solved: solved
+        solved: solved,
     });
     display(hints.join(""), message);
     if (solved) {
         toggleButtons();
+        showExplorerLink(puzzle.node_id);
     }
 }
 
