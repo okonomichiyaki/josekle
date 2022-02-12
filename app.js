@@ -1,6 +1,7 @@
 const debug = window.location.href.includes("debug=true");
 const oneColor = window.location.href.includes("oneColor=true");
 const clearStorage = window.location.href.includes("clearStorage=true");
+const hardMode = window.location.href.includes("hardMode=true");
 var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
@@ -44,7 +45,17 @@ function getTitle(n) {
     return "Josekle #"+(getNumber()+n);
 }
 function getSolution() {
-    return puzzles[getNumber() % puzzles.length];
+    const n = getNumber();
+    if (n<15) {
+        const oldPuzzle = puzzles[getNumber() % puzzles.length]; //old puzzles
+        return {"node_id": null, "solution": oldPuzzle};
+    } else {
+        if (hardMode) {
+            return hardPuzzles[getNumber() % hardPuzzles.length];
+        } else {
+            return easyPuzzles[getNumber() % easyPuzzles.length];
+        }
+    }
 }
 
 /* functions to get inputted sequence from besogo */
@@ -183,7 +194,8 @@ function submit() {
     if (moves.length === 0) {
         return;
     }
-    var solution = getSolution();
+    const puzzle = getSolution();
+    const solution = puzzle.solution;
     var hints = getInputEditor().check(solution);
     if (debug) {
         console.log("guess: " + pretty_print(moves));
@@ -237,7 +249,8 @@ function submit() {
 }
 
 function startOneColorMode() {
-    const solution = getSolution();
+    const puzzle = getSolution();
+    const solution = puzzle.solution;
     const editor = getInputEditor();
     for (var i = solution.length - 1; i >= 0; i--) {
         var move = solution[i];

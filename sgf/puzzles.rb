@@ -41,6 +41,16 @@ def file_to_explorer(file)
     ExplorerPosition.new(node_id, json)
 end
 
+def save_as_js(puzzles, variable, filename)
+    File.open(filename, 'w') do |file|
+        file.write("const ");
+        file.write(variable);
+        file.write("=");
+        file.write(JSON.unparse(puzzles))
+        file.write(";");
+    end
+end
+
 lengths={}
 lt=0
 gt=0
@@ -80,8 +90,5 @@ easy = positions.filter { |position| position.basic? && !position.contains_pass?
 #puts "basic=#{basic.length}"
 #puts "lt=#{lt},gt=#{gt}"
 
-hard.shuffle!
-easy.shuffle!
-
-File.open("hard.json", 'w') { |file| file.write(JSON.unparse(hard)) }
-File.open("easy.json", 'w') { |file| file.write(JSON.unparse(easy)) }
+save_as_js(hard.shuffle, "hardPuzzles", "hard.js")
+save_as_js(easy.shuffle, "easyPuzzles", "easy.js")
