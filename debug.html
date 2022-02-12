@@ -25,23 +25,32 @@
   <script>
     window.onload = function() {
         const nodeId=parseInt(document.location.href.split("#")[1]);
-        fetch('/josekle/sgf/puzzles.json')
+        fetch('/josekle/sgf/hard.json')
             .then(response => response.json())
             .then(puzzles => {
                 const puzzle = puzzles[Math.floor(Math.random()*puzzles.length)];
+                console.log(puzzle);
                 const nodeId = puzzle["node_id"];
-                const sgf = puzzle["sgf"];
-                document.querySelector("#oje").src="https://online-go.com/joseki/" + nodeId;
+                const solution = puzzle["solution"];
+                const url = "https://online-go.com/joseki/" + nodeId;
+                document.querySelector("#oje").src=url;
+                const a = document.createElement("a");
+                a.href = url;
+                a.innerText = url;
+                document.querySelector("body").appendChild(a);
                 const besogoBoard = document.createElement('div');
                 besogoBoard.id="input-board";
                 besogoBoard.classList.add("besogo-editor");
                 besogoBoard.coord="western";
-                besogoBoard.innerText=sgf;
+//                besogoBoard.innerText=sgf;
                 //besogoBoard.panels="control+tree";
                 document.querySelector("div#container").appendChild(besogoBoard);
                 besogo.autoInit();
                 const editor = document.querySelector('#input-board').editor;
-                while (undefined === editor.nextNode(1)){}
+                for (var i = 0; i < solution.length; i++) {
+                    editor.click(solution[i].x, solution[i].y, false, false);
+                }
+//                while (undefined === editor.nextNode(1)){}
                 editor.setZoom(1.0);
             });
     }
