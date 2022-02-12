@@ -38,6 +38,7 @@ SOFTWARE.
     padding: 0px;
     background: #d8dcd6;
     font-size: 12pt;
+    color: black;
     border-color: #f5f5f5 #e6e6e6 #e6e6e6 #f5f5f5;
 }
 
@@ -47,6 +48,7 @@ SOFTWARE.
 
 .besogo-container input[type='button'] {
     background: #d8dcd6;
+    color: black;
     border-color: #f5f5f5 #e6e6e6 #e6e6e6 #f5f5f5;
 }
 
