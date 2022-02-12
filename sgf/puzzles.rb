@@ -58,8 +58,10 @@ files = Dir.glob(ARGV[0]+"/*.json")
 positions=files.map { |file| file_to_explorer(file) }
 hard = positions.filter { |position| position.joseki? && !position.contains_pass? }
         .map { |position| oje_string_to_puzzle(position.node_id, position.oje_string) }
-easy = positions.filter { |position| position.basic? && !position.contains_pass? }
-        .map { |position| oje_string_to_puzzle(position.node_id, position.oje_string) }
+easy = positions.filter do |position|
+    length=oje_string_to_list(position.oje_string).length
+    (length < 10 && position.joseki? || position.basic?) && !position.contains_pass?
+end.map { |position| oje_string_to_puzzle(position.node_id, position.oje_string) }
 # all.each do |position|
 #         length=oje_string_to_list(position.oje_string).length
 #         if length < 10 || position.basic?
@@ -86,9 +88,10 @@ easy = positions.filter { |position| position.basic? && !position.contains_pass?
 #    puts "k=#{k},v=#{v}"
 #end
 
-#puts "all=#{all.length}"
+puts "hard=#{hard.length}"
+puts "easy=#{easy.length}"
 #puts "basic=#{basic.length}"
 #puts "lt=#{lt},gt=#{gt}"
 
-save_as_js(hard.shuffle, "hardPuzzles", "hard.js")
-save_as_js(easy.shuffle, "easyPuzzles", "easy.js")
+save_as_js(hard.shuffle, "hardPuzzles", "../hard.js")
+save_as_js(easy.shuffle, "easyPuzzles", "../easy.js")
