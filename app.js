@@ -1,6 +1,7 @@
 const debug = window.location.href.includes("debug=true");
 const oneColor = window.location.href.includes("oneColor=true");
 const clearStorage = window.location.href.includes("clearStorage=true");
+const hardMode = window.location.href.includes("hardMode=true");
 var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
@@ -41,10 +42,24 @@ function getTitle(n) {
     if (typeof n === "undefined") {
         n=0;
     }
-    return "Josekle #"+(getNumber()+n);
+    var difficulty = "";
+    if (hardMode) {
+        difficulty = " (hard)";
+    }
+    return "Josekle #"+(getNumber()+n)+difficulty;
 }
 function getSolution() {
-    return puzzles[getNumber() % puzzles.length];
+    const n = getNumber();
+    if (n<15) {
+        const oldPuzzle = puzzles[getNumber() % puzzles.length]; //old puzzles
+        return {"node_id": null, "solution": oldPuzzle};
+    } else {
+        if (hardMode) {
+            return hardPuzzles[getNumber() % hardPuzzles.length];
+        } else {
+            return easyPuzzles[getNumber() % easyPuzzles.length];
+        }
+    }
 }
 
 /* functions to get inputted sequence from besogo */
@@ -128,6 +143,18 @@ function toggleButtons() {
     document.querySelector('#Submit').classList.add("hidden");
     scrollHints();
 }
+function showExplorerLink(nodeId) {
+    if (nodeId === null || nodeId === undefined) { // old puzzles don't have node
+        return;
+    }
+    const output = document.querySelector("#output");
+    const a = document.createElement("a");
+    a.href = "https://online-go.com/joseki/" + nodeId;
+    a.innerText = "View on OGS Joseki Explorer";
+    const p = document.createElement("p");
+    p.appendChild(a);
+    output.appendChild(p);
+}
 function display(hints, message) {
     var output = document.querySelector("#output");
     var p = document.createElement("p");
@@ -183,7 +210,8 @@ function submit() {
     if (moves.length === 0) {
         return;
     }
-    var solution = getSolution();
+    const puzzle = getSolution();
+    const solution = puzzle.solution;
     var hints = getInputEditor().check(solution);
     if (debug) {
         console.log("guess: " + pretty_print(moves));
@@ -201,26 +229,26 @@ function submit() {
     const solved = wasCorrect(hints, solution);
     if (solved) {
         if (hints.length > solution.length) {
-            message = " Good Enough!";
+            message = "Good Enough!";
         } else {
             switch(guesses.length) {
                 case 1:
-                    message = " Genius";
+                    message = "Genius";
                     break;
                 case 2:
-                    message = " Magnificent";
+                    message = "Magnificent";
                     break;
                 case 3:
-                    message = " Impressive";
+                    message = "Impressive";
                     break;
                 case 4:
-                    message = " Splendid";
+                    message = "Splendid";
                     break;
                 case 5:
-                    message = " Great";
+                    message = "Great";
                     break;
                 default:
-                    message = " Phew";
+                    message = "Phew";
             }
         }
     } else if (!checkDictionary(moves)) {
@@ -228,16 +256,18 @@ function submit() {
     }
     storageSave(getTitle(),{
         submissions: submissions,
-        solved: solved
+        solved: solved,
     });
     display(hints.join(""), message);
     if (solved) {
         toggleButtons();
+        showExplorerLink(puzzle.node_id);
     }
 }
 
 function startOneColorMode() {
-    const solution = getSolution();
+    const puzzle = getSolution();
+    const solution = puzzle.solution;
     const editor = getInputEditor();
     for (var i = solution.length - 1; i >= 0; i--) {
         var move = solution[i];
