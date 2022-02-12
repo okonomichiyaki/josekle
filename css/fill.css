@@ -27,6 +27,10 @@ html, body {
     overflow: auto;
     flex: 1 1 35%;
     width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end
 }
 
 #output p {
