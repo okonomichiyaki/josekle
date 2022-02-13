@@ -344,6 +344,7 @@ window.onload = function() {
         localStorage.clear();
     }
     besogo.autoInit();
+    initModal();
     document.querySelector("div#title").innerText=getTitle();
     getInputEditor().addListener(function(msg) {
         if (msg.zoom) {

@@ -1368,7 +1368,7 @@ besogo.makeControlPanel = function(container, editor) {
 
     // Draws the variant style buttons
     function drawStyleButtons() {
-        var svg, element, coordStyleButton, zoomInButton, zoomOutButton, darkThemeButton;
+        var svg, element, coordStyleButton, zoomInButton, zoomOutButton, darkThemeButton, helpButton;
 
         variantStyleButton = document.createElement('button');
         variantStyleButton.onclick = function() {
@@ -1450,6 +1450,16 @@ besogo.makeControlPanel = function(container, editor) {
         svg = makeButtonContainer();
         darkThemeButton.appendChild(svg);
         svg.appendChild(besogo.svgLabel(50, 50, 'black', '☽'));
+
+        helpButton = document.createElement('button');
+        helpButton.onclick = function() {
+            document.getElementById("help-modal").style.display = "block";
+        };
+        helpButton.title = 'Show help';
+        container.appendChild(helpButton);
+        svg = makeButtonContainer();
+        helpButton.appendChild(svg);
+        svg.appendChild(besogo.svgLabel(50, 50, 'black', '?'));
     } // END function drawStyleButtons
 
     // Makes an SVG container for the button graphics
