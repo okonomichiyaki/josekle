@@ -76,6 +76,9 @@ besogo.create = function(container, options) {
     } else { // SVG stones
         editor.SHADOWS = (options.shadows && options.shadows !== 'auto');
     }
+    if (options.zoom) { // Set initial zoom value if given
+        editor.setZoom(+options.zoom)
+    }
 
     if (!options.nokeys) { // Add keypress handler unless nokeys option is truthy
         addKeypressHandler(container, editor);
