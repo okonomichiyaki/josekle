@@ -2278,6 +2278,19 @@ besogo.makeFilePanel = function(container, editor) {
     };
     container.appendChild(element);
 
+    // Export puzzles button
+    element = document.createElement('input');
+    element.type = 'button';
+    element.value = 'Export';
+    element.title = 'Export puzzles.js';
+    element.onclick = function() {
+        var fileName = prompt('Save file as', 'puzzles.js');
+        if (fileName) { // Canceled or empty string does nothing
+            saveFile(fileName, besogo.exportPuzzles(editor));
+        }
+    };
+    container.appendChild(element);
+
 
     // Makes a new board button
     function makeNewBoardButton(size) {
@@ -3103,6 +3116,40 @@ besogo.makeNamesPanel = function(container, editor) {
         return value;
     }
 };
+
+besogo.exportPuzzles = function(editor) {
+    'use strict';
+    var i, sequences = [],
+        leafs = getLeafs(editor.getRoot());
+    for (i = 0; i < leafs.length; i++) {
+        sequences.push(getMoveSequence(leafs[i]));
+    }
+    return 'var puzzles = \n' + JSON.stringify(sequences);
+
+    // Returns list of the leaf nodes in the game tree
+    function getLeafs(node) {
+        var i, leafs = [], children = node.children;
+        if (children.length === 0) {
+            return [node];
+        } else {
+            for (i = 0; i < children.length; i++) {
+                leafs = leafs.concat(getLeafs(children[i]));
+            }
+        }
+        return leafs;
+    }
+
+    // Return move sequence to reach this node
+    function getMoveSequence(node) {
+        var moves = [];
+        while (node.move !== null) {
+            moves.push({x : node.move.x, y : node.move.y});
+            node = node.parent;
+        }
+        return moves.reverse();
+    }
+};
+
 // Convert game state tree into SGF string
 besogo.composeSgf = function(editor) {
     'use strict';
@@ -3257,6 +3304,7 @@ besogo.composeSgf = function(editor) {
         }
     }
 };
+
 (function() {
 'use strict';
 
