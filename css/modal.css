@@ -14,7 +14,7 @@
 
 /* Modal Content/Box */
 .modal-content {
-    background-color: #fefefe;
+    background-color: #d0fefe;
     margin: 20px auto; /* from the top and centered */
     padding: 5px;
     border: 1px solid #888;
@@ -30,8 +30,8 @@
 }
 
 .modal-stuff img {
-    max-height: 50%;
-    max-width: 50%;
+    max-height: 35%;
+    max-width: 75%;
     height: auto;
     width: auto;
 }
