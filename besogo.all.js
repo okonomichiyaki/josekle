@@ -76,6 +76,9 @@ besogo.create = function(container, options) {
     } else { // SVG stones
         editor.SHADOWS = (options.shadows && options.shadows !== 'auto');
     }
+    if (options.zoom) { // Set initial zoom value if given
+        editor.setZoom(+options.zoom)
+    }
 
     if (!options.nokeys) { // Add keypress handler unless nokeys option is truthy
         addKeypressHandler(container, editor);
@@ -1368,7 +1371,7 @@ besogo.makeControlPanel = function(container, editor) {
 
     // Draws the variant style buttons
     function drawStyleButtons() {
-        var svg, element, coordStyleButton, zoomInButton, zoomOutButton, darkThemeButton;
+        var svg, element, coordStyleButton, zoomInButton, zoomOutButton, darkThemeButton, helpButton;
 
         variantStyleButton = document.createElement('button');
         variantStyleButton.onclick = function() {
@@ -1450,6 +1453,16 @@ besogo.makeControlPanel = function(container, editor) {
         svg = makeButtonContainer();
         darkThemeButton.appendChild(svg);
         svg.appendChild(besogo.svgLabel(50, 50, 'black', '☽'));
+
+        helpButton = document.createElement('button');
+        helpButton.onclick = function() {
+            document.getElementById("help-modal").style.display = "block";
+        };
+        helpButton.title = 'Show help';
+        container.appendChild(helpButton);
+        svg = makeButtonContainer();
+        helpButton.appendChild(svg);
+        svg.appendChild(besogo.svgLabel(50, 50, 'black', '?'));
     } // END function drawStyleButtons
 
     // Makes an SVG container for the button graphics
@@ -2261,6 +2274,19 @@ besogo.makeFilePanel = function(container, editor) {
         var fileName = prompt('Save file as', 'export.sgf');
         if (fileName) { // Canceled or empty string does nothing
             saveFile(fileName, besogo.composeSgf(editor));
+        }
+    };
+    container.appendChild(element);
+
+    // Export puzzles button
+    element = document.createElement('input');
+    element.type = 'button';
+    element.value = 'Export';
+    element.title = 'Export puzzles.js';
+    element.onclick = function() {
+        var fileName = prompt('Save file as', 'puzzles.js');
+        if (fileName) { // Canceled or empty string does nothing
+            saveFile(fileName, besogo.exportPuzzles(editor));
         }
     };
     container.appendChild(element);
@@ -3090,6 +3116,40 @@ besogo.makeNamesPanel = function(container, editor) {
         return value;
     }
 };
+
+besogo.exportPuzzles = function(editor) {
+    'use strict';
+    var i, sequences = [],
+        leafs = getLeafs(editor.getRoot());
+    for (i = 0; i < leafs.length; i++) {
+        sequences.push(getMoveSequence(leafs[i]));
+    }
+    return 'var puzzles = \n' + JSON.stringify(sequences);
+
+    // Returns list of the leaf nodes in the game tree
+    function getLeafs(node) {
+        var i, leafs = [], children = node.children;
+        if (children.length === 0) {
+            return [node];
+        } else {
+            for (i = 0; i < children.length; i++) {
+                leafs = leafs.concat(getLeafs(children[i]));
+            }
+        }
+        return leafs;
+    }
+
+    // Return move sequence to reach this node
+    function getMoveSequence(node) {
+        var moves = [];
+        while (node.move !== null) {
+            moves.push({x : node.move.x, y : node.move.y});
+            node = node.parent;
+        }
+        return moves.reverse();
+    }
+};
+
 // Convert game state tree into SGF string
 besogo.composeSgf = function(editor) {
     'use strict';
@@ -3244,6 +3304,7 @@ besogo.composeSgf = function(editor) {
         }
     }
 };
+
 (function() {
 'use strict';
 

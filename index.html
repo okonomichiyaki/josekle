@@ -20,9 +20,11 @@
   <meta property="og:image" content="https://okonomichiyaki.github.io/josekle/screenshot.png">
   <link href="css/besogo.css" rel="stylesheet" />
   <link href="css/fill.css" rel="stylesheet" />
+  <link href="css/modal.css" rel="stylesheet" />
   <link href="css/dark.css" rel="stylesheet" disabled="true" id="dark-css-link"/>
   <script src="app.js"></script>
   <script src="besogo.all.js"></script>
+  <script src="modal.js"></script>
   <script src="puzzles.js"></script>
   <script src="hard.js"></script>
   <script src="easy.js"></script>
@@ -32,6 +34,16 @@
 <div id="title"></div>
 <div id="output"></div>
 <div id="dictionary-board" class="besogo-viewer none" resize="fixed" sgf="sgf/dictionary.sgf"></div>
+<div id="help-modal" class="modal"><div class="modal-content">
+<span id="modal-close" class="modal-close">&times;</span>
+<div class="modal-stuff">
+  <p>Guess the hidden joseki by submitting move sequences.</p>
+  <img src="img/cropped.png">
+  <p>Green <svg viewBox="-45 -45 90 90"><circle cx="0" cy="0" r="38" fill="none" class="besogo-svg-correct"></circle></svg> indicate moves at the correct place and timing within the sequence.</p>
+  <p>Purple <svg viewBox="-45 -45 90 90"><circle cx="0" cy="0" r="38" fill="none" class="besogo-svg-hint"></circle></svg> indicate points that are in the sequence, but with incorrect timing and/or stone color.</p>
+  <p>Red <svg viewBox="-32 -32 64 64"><path d="m-24,-24l48,48m0,-48l-48,48" fill="none" class="besogo-svg-miss"></path></svg> indicate points that are not part of the joseki.</p>
+  <p>A new puzzle is available every day! For a greater challenge, check out <a href="index.html?hardMode=true">hard mode</a>.</p>
+</div></div></div>
 </body>
 </html>
 

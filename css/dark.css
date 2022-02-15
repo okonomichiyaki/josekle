@@ -75,3 +75,18 @@
 
 .besogo-miss {
     stroke: #be0119;
+}
+
+.modal-content {
+    color: #929591;
+    background: #1b2431;
+    border: 1px solid black;
+}
+
+a {
+    color: #95d0fc;
+}
+
+a:visited {
+    color: #b790d4;
+}
