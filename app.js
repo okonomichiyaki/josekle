@@ -146,12 +146,12 @@ function showExplorerLink(nodeId) {
     if (nodeId === null || nodeId === undefined) { // old puzzles don't have node
         return;
     }
+    const button = makeButton("OGS Explorer", "View this joseki on OGS Joseki Explorer", function() {
+        window.location="https://online-go.com/joseki/" + nodeId;
+    });
     const output = document.querySelector("#output");
-    const a = document.createElement("a");
-    a.href = "https://online-go.com/joseki/" + nodeId;
-    a.innerText = "View on OGS Joseki Explorer";
     const p = document.createElement("p");
-    p.appendChild(a);
+    p.appendChild(button);
     output.appendChild(p);
 }
 function display(hints, message) {
