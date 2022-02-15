@@ -12,4 +12,9 @@ function initModal() {
             modal.style.display = "none";
         }
     };
+
+    if (!storageLoad("seenHelp")) {
+        modal.style.display = "block";
+        storageSave("seenHelp", true);
+    }
 }
