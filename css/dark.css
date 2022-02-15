@@ -83,10 +83,10 @@
     border: 1px solid black;
 }
 
-.modal-content a {
+a {
     color: #95d0fc;
 }
 
-.modal-content a:visited {
+a:visited {
     color: #b790d4;
 }
