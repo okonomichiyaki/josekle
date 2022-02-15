@@ -141,7 +141,6 @@ function toggleButtons() {
         makeButton("Share", "Copy results to clipboard without spoiler tags", share)
     );
     document.querySelector('#Submit').classList.add("hidden");
-    scrollHints();
 }
 function showExplorerLink(nodeId) {
     if (nodeId === null || nodeId === undefined) { // old puzzles don't have node
@@ -262,6 +261,7 @@ function submit() {
     if (solved) {
         toggleButtons();
         showExplorerLink(puzzle.node_id);
+        scrollHints();
     }
 }
 
