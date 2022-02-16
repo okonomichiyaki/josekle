@@ -193,9 +193,6 @@ function isDictionaryReady() {
     return ready;
 }
 function checkDictionary(moves) {
-    if (!debug) {
-        return true;
-    }
     var isValid = true;
     const dict = document.querySelector("#dictionary-board").editor;
     moves.forEach(move => {
