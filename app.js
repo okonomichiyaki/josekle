@@ -7,6 +7,7 @@ const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟣";
 const ROTATE = "🔄";
+const TODAY = new Date();
 
 /* functions for emoji support detection */
 function supportsEmoji (e) {
@@ -35,8 +36,7 @@ function getNumber() {
     }
     const dayMillis = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
     const start = new Date(2022, 1, 1);
-    const today = new Date();
-    return Math.ceil(Math.abs((start - today) / dayMillis));
+    return Math.ceil(Math.abs((start - TODAY) / dayMillis));
 }
 function getTitle(n) {
     if (typeof n === "undefined") {
@@ -248,7 +248,7 @@ function submit() {
             }
         }
     } else if (!checkDictionary(moves)) {
-        message = "Not present in the dictionary?"; 
+        message = "Not present in the dictionary?";
     }
     storageSave(getTitle(),{
         submissions: submissions,
