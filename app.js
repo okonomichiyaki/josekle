@@ -38,26 +38,27 @@ function getNumber() {
     const start = new Date(2022, 1, 1);
     return Math.ceil(Math.abs((start - TODAY) / dayMillis));
 }
+const PUZZLE_NUMBER = getNumber();
 function getTitle(n) {
     if (typeof n === "undefined") {
-        n=0;
+        n = 0;
     }
-    var difficulty = "";
+    var difficulty = " (" + getSolution().solution.length + " moves";
     if (hardMode) {
-        difficulty = " (hard)";
+        difficulty += ", hard";
     }
-    return "Josekle #"+(getNumber()+n)+difficulty;
+    difficulty += ")";
+    return "Josekle #" + (PUZZLE_NUMBER + n) + difficulty;
 }
 function getSolution() {
-    const n = getNumber();
-    if (n<15) {
-        const oldPuzzle = puzzles[getNumber() % puzzles.length]; //old puzzles
+    if (PUZZLE_NUMBER < 15) {
+        const oldPuzzle = puzzles[PUZZLE_NUMBER % puzzles.length]; //old puzzles
         return {"node_id": null, "solution": oldPuzzle};
     } else {
         if (hardMode) {
-            return hardPuzzles[getNumber() % hardPuzzles.length];
+            return hardPuzzles[PUZZLE_NUMBER % hardPuzzles.length];
         } else {
-            return easyPuzzles[getNumber() % easyPuzzles.length];
+            return easyPuzzles[PUZZLE_NUMBER % easyPuzzles.length];
         }
     }
 }
@@ -103,22 +104,6 @@ function share() {
     text += "https://okonomichiyaki.github.io/josekle/";
     navigator.clipboard.writeText(text);
 }
-function shareDiscord() {
-    var text = getTitle() + "\n";
-    text += "||";
-    text += guesses.map(guess => guess.join("")).join("\n");
-    text += "||\n";
-    text += "https://okonomichiyaki.github.io/josekle/";
-    navigator.clipboard.writeText(text);
-}
-function shareDiscourse() {
-    var text = `[details="${getTitle()}"]\n`;
-    text += guesses.map(guess => guess.join("")).join("\n");
-    text += `\n[/details]`;
-    text += "\n";
-    text += "https://okonomichiyaki.github.io/josekle/";
-    navigator.clipboard.writeText(text);
-}
 function makeButton(value, title, onclick) {
     element = document.createElement('input');
     element.type = 'button';
@@ -132,13 +117,7 @@ function scrollHints() {
 }
 function toggleButtons() {
     document.querySelector('#output').appendChild(
-        makeButton("Share (Discourse)", "Copy results to clipboard with Discourse spoiler tags", shareDiscourse)
-    );
-    document.querySelector('#output').appendChild(
-        makeButton("Share (Discord)", "Copy results to clipboard with Discord spoiler tags", shareDiscord)
-    );
-    document.querySelector('#output').appendChild(
-        makeButton("Share", "Copy results to clipboard without spoiler tags", share)
+        makeButton("Share", "Copy results to clipboard", share)
     );
     document.querySelector('#Submit').classList.add("hidden");
 }
@@ -146,13 +125,10 @@ function showExplorerLink(nodeId) {
     if (nodeId === null || nodeId === undefined) { // old puzzles don't have node
         return;
     }
-    const button = makeButton("OGS Explorer", "View this joseki on OGS Joseki Explorer", function() {
-        window.location="https://online-go.com/joseki/" + nodeId;
-    });
-    const output = document.querySelector("#output");
-    const p = document.createElement("p");
-    p.appendChild(button);
-    output.appendChild(p);
+    document.querySelector("#output").appendChild(
+        makeButton("OGS Explorer", "View this joseki on OGS Joseki Explorer", function() {
+            window.location="https://online-go.com/joseki/" + nodeId;
+        }));
 }
 function display(hints, message) {
     var output = document.querySelector("#output");
@@ -201,6 +177,15 @@ function checkDictionary(moves) {
     dict.prevNode(-1);// reset the dictionary board
     return isValid;
 }
+
+function showPopup() {
+    var popup = document.querySelector("#notify");
+    popup.classList.add("active");
+    setTimeout(function(){
+        popup.classList.remove("active");
+    }, 1200);
+}
+
 function submit() {
     var moves = extractMoves();
     if (moves.length === 0) {
@@ -208,6 +193,10 @@ function submit() {
     }
     const puzzle = getSolution();
     const solution = puzzle.solution;
+    if (moves.length > solution.length) {
+        showPopup();
+        return;
+    }
     var hints = getInputEditor().check(solution);
     if (debug) {
         console.log("guess: " + pretty_print(moves));
