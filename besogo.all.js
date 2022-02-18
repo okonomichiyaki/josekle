@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-(function() {
+(function() { // Main components
 'use strict';
 var besogo = window.besogo = window.besogo || {}; // Establish our namespace
 besogo.VERSION = '0.0.2-alpha';
@@ -381,6 +381,7 @@ function navigatePath(editor, path) {
 }
 
 })(); // END closure
+
 besogo.makeBoardDisplay = function(container, editor) {
     'use strict';
     var CELL_SIZE = 88, // Including line width
@@ -1118,7 +1119,7 @@ besogo.makeCommentPanel = function(container, editor) {
         container.replaceChild(table, gameInfoTable);
         gameInfoTable = table;
     }
-    
+
     function updateGameInfoEdit(gameInfo) {
         var table = document.createElement('table'),
             infoTableOrder = playerInfoOrder.concat(infoOrder),
@@ -1129,7 +1130,7 @@ besogo.makeCommentPanel = function(container, editor) {
             id = infoTableOrder[i];
             row = document.createElement('tr');
             table.appendChild(row);
-            
+
             cell = document.createElement('td');
             cell.appendChild(document.createTextNode(infoIds[id]));
             row.appendChild(cell);
@@ -1219,6 +1220,7 @@ besogo.makeCommentPanel = function(container, editor) {
     }
 
 };
+
 besogo.makeControlPanel = function(container, editor) {
     'use strict';
     var leftElements = [], // SVG elements for previous node buttons
@@ -1474,7 +1476,8 @@ besogo.makeControlPanel = function(container, editor) {
         });
     }
 };
-(function() {
+
+(function() { // Coordinates
 'use strict';
 
 // Parent object to hold coordinate system helper functions
@@ -1601,7 +1604,7 @@ function numberToLetter(number) {
 function numberToCJK(number) {
     var label = '',
         cjk = '一二三四五六七八九';
-    
+
     if (number >= 20) { // 20 and larger
         label = cjk.charAt(number / 10 - 1) + '十';
     } else if (number >= 10) { // 10 through 19
@@ -1614,6 +1617,7 @@ function numberToCJK(number) {
 }
 
 })(); // END closure
+
 besogo.makeEditor = function(sizeX, sizeY) {
     'use strict';
     // Creates an associated game state tree
@@ -1750,7 +1754,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
             notifyListeners({ coord: setCoord });
         }
     }
-    
+
     // Get the current zoom ratio
     function getZoom() {
         return zoom;
@@ -1774,7 +1778,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
     function decreaseZoom() {
         let index = ZOOM_STEPS.length;
         while (--index && ZOOM_STEPS[index] >= zoom);
-        
+
         if (index > -1) {
             setZoom(ZOOM_STEPS[index]);
         }
@@ -2221,7 +2225,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
     //  Data sent to listeners:
     //    tool: changed tool selection
     //    label: changed next label
-    //    coord: changed coordinate system 
+    //    coord: changed coordinate system
     //    variantStyle: changed variant style
     //    gameInfo: changed game info
     //    comment: changed comment in current node
@@ -2240,6 +2244,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
         }
     }
 };
+
 besogo.makeFilePanel = function(container, editor) {
     'use strict';
     var fileChooser, // Reference to the file chooser element
@@ -2366,6 +2371,7 @@ besogo.makeFilePanel = function(container, editor) {
         container.removeChild(link); // Immediately remove the link
     }
 };
+
 besogo.makeGameRoot = function(sizeX, sizeY) {
     'use strict';
     var BLACK = -1, // Stone state constants
@@ -2710,6 +2716,7 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
 
     return root;
 };
+
 // Load a parsed SGF object into a game state tree
 besogo.loadSgf = function(sgf, editor) {
     'use strict';
@@ -2878,6 +2885,7 @@ besogo.loadSgf = function(sgf, editor) {
         }
     }
 };
+
 besogo.makeNamesPanel = function(container, editor) {
     'use strict';
     var playerBox = document.createElement('div'),
@@ -2945,7 +2953,9 @@ besogo.makeNamesPanel = function(container, editor) {
         }
         parent.appendChild(textNode);
     }
-};besogo.parseSgf = function(text) {
+};
+
+besogo.parseSgf = function(text) {
     'use strict';
     var at = 0, // Current position
         ch = text.charAt(at); // Current character at position
@@ -3305,7 +3315,7 @@ besogo.composeSgf = function(editor) {
     }
 };
 
-(function() {
+(function() { // SVG utilities
 'use strict';
 
 // Color palette
@@ -3524,6 +3534,7 @@ besogo.svgLabel = function(x, y, color, label) {
 };
 
 })(); // END closure
+
 besogo.makeToolPanel = function(container, editor) {
     'use strict';
     var element, // Scratch for building SVG images
@@ -3714,6 +3725,7 @@ besogo.makeToolPanel = function(container, editor) {
         return element;
     }
 };
+
 besogo.makeTreePanel = function(container, editor) {
     'use strict';
     var svg,
