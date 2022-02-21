@@ -67,7 +67,8 @@ function getSolution() {
 function extractMovesFrom(current) {
     var moves=[];
     if (current.markup.length > 0) {
-        return []; // Detects if there are already hints
+        showPopup("Already submitted");
+        return [];
     }
     while (current.move !== null) {
         moves.push({x:current.move.x, y:current.move.y});
@@ -103,6 +104,7 @@ function share() {
     text += "\n";
     text += "https://okonomichiyaki.github.io/josekle/";
     navigator.clipboard.writeText(text);
+    showPopup("Copied to clipboard");
 }
 function makeButton(value, title, onclick) {
     element = document.createElement('input');
@@ -178,9 +180,10 @@ function checkDictionary(moves) {
     return isValid;
 }
 
-function showPopup() {
+function showPopup(text) {
     var popup = document.querySelector("#notify");
     popup.classList.add("active");
+    document.getElementById('notify-text').innerText = text;
     setTimeout(function(){
         popup.classList.remove("active");
     }, 1200);
@@ -194,7 +197,7 @@ function submit() {
     const puzzle = getSolution();
     const solution = puzzle.solution;
     if (moves.length > solution.length) {
-        showPopup();
+        showPopup("Too many moves");
         return;
     }
     var hints = getInputEditor().check(solution);
@@ -259,7 +262,7 @@ function startOneColorMode() {
         var move = solution[i];
         editor.getRoot().addMarkup(move.x,move.y,2);
     }
-    editor.toggleVariantStyle(); // toggles a redraw
+    editor.setVariantStyle(editor.getVariantStyle()); // toggles a redraw
 }
 
 /* functions to save and restore previous attempts */
