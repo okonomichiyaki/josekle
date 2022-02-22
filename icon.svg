@@ -1,21 +1,29 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" data-name="Layer 1" viewBox="0 0 948.23 948.23">
-  <defs>
-    <style>.cls-1{stroke:#a86817;stroke-width:3px;fill:url(#radial-gradient);}.cls-1,.cls-2,.cls-3,.cls-4,.cls-5,.cls-7,.cls-8{stroke-miterlimit:31.51;}.cls-2,.cls-3,.cls-7{fill:none;}.cls-2{stroke:#231f20;stroke-width:12px;}.cls-3{stroke:#6d28d9;}.cls-3,.cls-5{stroke-width:70.89px;}.cls-4,.cls-8{fill:#252525;stroke:#252525;}.cls-4{stroke-width:78.77px;}.cls-5{fill:#f5f5f5;stroke:#f5f5f5;}.cls-6{fill:#069447;}.cls-7{stroke:#e50000;stroke-width:39.38px;}.cls-8{stroke-width:30px;}</style>
-    <radialGradient id="radial-gradient" cx="472.66" cy="475.38" r="472.61" gradientTransform="matrix(1, 0, 0, -1, 1.45, 949.49)" gradientUnits="userSpaceOnUse">
-      <stop offset="0.73" stop-color="#e1b372"/>
-      <stop offset="1" stop-color="#f4ac53"/>
-    </radialGradient>
-  </defs>
-  <rect class="cls-1" x="1.5" y="1.5" width="945.23" height="945.23" rx="141.78"/>
-  <line class="cls-2" x1="1.5" y1="671.04" x2="946.73" y2="671.04"/>
-  <line class="cls-2" x1="277.19" y1="946.73" x2="277.19" y2="1.5"/>
-  <line class="cls-2" x1="671.04" y1="946.73" x2="671.04" y2="1.5"/>
-  <line class="cls-2" x1="1.5" y1="279.24" x2="946.73" y2="279.24"/>
-  <circle class="cls-3" cx="671.04" cy="279.24" r="157.54"/>
-  <circle class="cls-4" cx="277.19" cy="671.04" r="157.54"/>
-  <circle class="cls-5" cx="671.04" cy="671.04" r="157.54"/>
-  <path class="cls-6" d="M273.56,468.86q-65.25,0-100.69-35t-35.45-98h74.13q0,31.67,16.58,49.2t46.78,17.53q30.45,0,47-17.41t16.58-49.32V89h71.18V335.94q0,63.3-36,98.12T273.56,468.86ZM250.91,153.14V89H376.54v64.1Z" transform="translate(1.45 1.49)"/>
-  <path class="cls-7" d="M582.94,582.9l173.3,173.3m0-173.3L582.94,756.2" transform="translate(1.45 1.49)"/>
-  <circle stroke="none" fill="#252525" cx="671.04" cy="279.24" r="20.4px"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 948.2 948.2" style="enable-background:new 0 0 948.2 948.2;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);stroke:#A86817;stroke-width:3;stroke-miterlimit:31.51;}
+	.st1{fill:none;stroke:#231F20;stroke-width:12;stroke-miterlimit:31.51;}
+	.st2{fill:none;stroke:#6D28D9;stroke-width:70.89;stroke-miterlimit:31.51;}
+	.st3{fill:#252525;stroke:#252525;stroke-width:78.77;stroke-miterlimit:31.51;}
+	.st4{fill:#F5F5F5;stroke:#F5F5F5;stroke-width:70.89;stroke-miterlimit:31.51;}
+	.st5{fill:#069447;}
+	.st6{fill:none;stroke:#E50000;stroke-width:39.38;stroke-miterlimit:31.51;}
+	.st7{fill:#252525;}
+</style>
+<radialGradient id="SVGID_1_" cx="472.665" cy="366.5148" r="472.615" gradientTransform="matrix(1 0 0 1 1.45 107.6002)" gradientUnits="userSpaceOnUse">
+	<stop offset="0.73" style="stop-color:#E1B372"/>
+	<stop offset="1" style="stop-color:#F4AC53"/>
+</radialGradient>
+<path class="st0" d="M143.3,1.5h661.7c78.3,0,141.8,63.5,141.8,141.8v661.7c0,78.3-63.5,141.8-141.8,141.8H143.3  C65,946.7,1.5,883.3,1.5,804.9V143.3C1.5,65,65,1.5,143.3,1.5z"/>
+<line class="st1" x1="1.5" y1="671" x2="946.7" y2="671"/>
+<line class="st1" x1="277.2" y1="946.7" x2="277.2" y2="1.5"/>
+<line class="st1" x1="671" y1="946.7" x2="671" y2="1.5"/>
+<line class="st1" x1="1.5" y1="279.2" x2="946.7" y2="279.2"/>
+<circle class="st2" cx="671" cy="279.2" r="157.5"/>
+<circle class="st3" cx="277.2" cy="671" r="157.5"/>
+<circle class="st4" cx="671" cy="671" r="157.5"/>
+<path class="st5" d="M275,470.3c-43.5,0-77.1-11.7-100.7-35s-35.4-56-35.4-98H213c0,21.1,5.5,37.5,16.6,49.2  c11.1,11.7,26.6,17.5,46.8,17.5c20.3,0,36-5.8,47-17.4s16.6-28,16.6-49.3V90.5h71.2v246.9c0,42.2-12,74.9-36,98.1  C351.1,458.8,317.7,470.4,275,470.3z M252.4,154.6V90.5H378v64.1L252.4,154.6z"/>
+<path class="st6" d="M584.4,584.4l173.3,173.3 M757.7,584.4L584.4,757.7"/>
+<circle class="st7" cx="671" cy="279.2" r="25.6"/>
 </svg>
