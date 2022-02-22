@@ -44,6 +44,9 @@ function getTitle(n) {
         n = 0;
     }
     var difficulty = " (" + getSolution().solution.length + " moves";
+    if (oneColor) {
+        difficulty += ", one color";
+    }
     if (hardMode) {
         difficulty += ", hard";
     }
@@ -66,7 +69,7 @@ function getSolution() {
 /* functions to get inputted sequence from besogo */
 function extractMovesFrom(current) {
     var moves=[];
-    if (current.markup.length > 0) {
+    if (current.submitted) {
         showPopup("Already submitted");
         return [];
     }
@@ -346,10 +349,10 @@ window.onload = function() {
     })
     var wait = setInterval(function () {
         if (isDictionaryReady()) {
-            const restored = tryRestore();
-            if (oneColor && !restored) {
+            if (oneColor) {
                 startOneColorMode();
             }
+            tryRestore();
             clearInterval(wait);
         }
     }, 100);

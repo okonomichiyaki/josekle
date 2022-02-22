@@ -41,8 +41,8 @@
     fill: black;
 }
 
-.besogo-variant-label {
-    fill: #be0119;
+.besogo-empty-label {
+    fill: black;
 }
 
 /* Overriding standard GUI theme */
