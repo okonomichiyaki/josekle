@@ -218,8 +218,20 @@ SOFTWARE.
     fill: #252525;
 }
 
+.besogo-empty-label {
+    fill: #252525;
+}
+
 .besogo-variant-label {
-    fill: #ff474c;
+    fill: #be0119;
+}
+
+.besogo-last-label {
+    fill: #0165fc;
+}
+
+.besogo-last-plus {
+    stroke: #0165fc;
 }
 
 .besogo-svg-correct {

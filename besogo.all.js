@@ -774,41 +774,41 @@ besogo.makeBoardDisplay = function(container, editor) {
                     x = svgPos(i);
                     y = svgPos(j);
                     stone = current.getStone(i, j);
-                    color = (stone === -1) ? "white" : "black"; // White on black
-                    if (lastMove && lastMove.x === i && lastMove.y === j) {
-                        // Mark last move blue or violet if also a variant
-                        color = checkVariants(variants, current, i, j) ?
-                            besogo.PURP : besogo.BLUE;
-                    } else if (checkVariants(variants, current, i, j)) {
-                        color = besogo.RED; // Natural variant marks are red
+                    color = stone; // Stone color int, may be overwriten with class str
+                    if (checkVariants(variants, current, i, j)) {
+                        color = 'variant';
                     }
                     if (typeof mark === 'number') { // Markup is a basic shape
                         switch(mark) {
-                            case 1:
+                            case 1: // Green (unnumbered and not used anymore)
                                 element = besogo.svgCircle(x, y, color);
                                 break;
-                            case 2:
+                            case 2: // Yellow (actually purple)
                                 element = besogo.svgSquare(x, y, color);
                                 break;
-                            case 3:
+                            case 3: // Missing
                                 element = besogo.svgTriangle(x, y, color);
                                 break;
-                            case 4:
-                                element = besogo.svgCross(x, y, color);
-                                break;
-                            case 5:
-                                element = besogo.svgBlock(x, y, color);
-                                break;
                         }
-                    } else { // Markup is a label
+                        if (mark < 0) { // Negative markup is green hint with number
+                            if (!stone) { // If placing label on empty spot
+                                element = makeBacker(x, y);
+                                group.appendChild(element);
+                            }
+                            element = besogo.svgLabel(x, y, color, -mark + '');
+                            markupLayer[ fromXY(i, j) ] = element;
+                            group.appendChild(element);
+                            element = besogo.svgCircle(x, y, color);
+                        }
+                    } else { // Markup is a label (unused for josekle)
                         if (!stone) { // If placing label on empty spot
                             element = makeBacker(x, y);
                             group.appendChild(element);
                         }
                         element = besogo.svgLabel(x, y, color, mark);
+                        markupLayer[ fromXY(i, j) ] = element;
                     }
                     group.appendChild(element);
-                    markupLayer[ fromXY(i, j) ] = element;
                 } // END if (mark)
             } // END for j
         } // END for i
@@ -818,8 +818,7 @@ besogo.makeBoardDisplay = function(container, editor) {
             i = lastMove.x;
             j = lastMove.y;
             if (!markupLayer[ fromXY(i, j) ]) { // Last move not marked
-                color = checkVariants(variants, current, i, j) ? besogo.PURP : besogo.BLUE;
-                element = besogo.svgPlus(svgPos(i), svgPos(j), color);
+                element = besogo.svgPlus(svgPos(i), svgPos(j));
                 group.appendChild(element);
                 markupLayer[ fromXY(i, j) ] = element;
             }
@@ -867,7 +866,7 @@ besogo.makeBoardDisplay = function(container, editor) {
             if (variants[i] !== current) { // Skip current (within siblings)
                 move = variants[i].move;
                 // Check if move, not a pass, and no mark yet
-                if (move && move.x !== 0 && !markupLayer[ fromXY(move.x, move.y) ]) {
+                if (move && move.x !== 0 && current.getMarkup(move.x, move.y) >= 0) {
                     stone = current.getStone(move.x, move.y);
                     x = svgPos(move.x); // Get SVG positions
                     y = svgPos(move.y);
@@ -877,7 +876,7 @@ besogo.makeBoardDisplay = function(container, editor) {
                     }
                     // Label variants with letters A-Z cyclically
                     label = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-                    element = besogo.svgLabel(x, y, 0, label);
+                    element = besogo.svgLabel(x, y, 'variant', label);
                     group.appendChild(element);
                     markupLayer[ fromXY(move.x, move.y) ] = element;
                 }
@@ -973,7 +972,7 @@ besogo.makeBoardDisplay = function(container, editor) {
                             element = besogo.svgBlock(x, y, color);
                             break;
                         case 'label':
-                            element = besogo.svgLabel(x, y, color, editor.getLabel());
+                            element = besogo.svgLabel(x, y, stone, editor.getLabel());
                             break;
                     } // END switch (tool)
                     if (element) {
@@ -1418,7 +1417,7 @@ besogo.makeControlPanel = function(container, editor) {
         container.appendChild(hideVariantButton);
         svg = makeButtonContainer();
         hideVariantButton.appendChild(svg);
-        svg.appendChild(besogo.svgLabel(50, 50, besogo.RED, 'A'));
+        svg.appendChild(besogo.svgLabel(50, 50, 'variant', 'A'));
         hideVariantElement = besogo.svgCross(50, 50, 'black');
         svg.appendChild(hideVariantElement);
 
@@ -1430,7 +1429,7 @@ besogo.makeControlPanel = function(container, editor) {
         container.appendChild(coordStyleButton);
         svg = makeButtonContainer();
         coordStyleButton.appendChild(svg);
-        svg.appendChild(besogo.svgLabel(50, 50, 'black', '四4'));
+        svg.appendChild(besogo.svgLabel(50, 50, 'empty', '四4'));
 
         zoomInButton = document.createElement('button');
         zoomInButton.onclick = editor.increaseZoom;
@@ -1454,7 +1453,7 @@ besogo.makeControlPanel = function(container, editor) {
         container.appendChild(darkThemeButton);
         svg = makeButtonContainer();
         darkThemeButton.appendChild(svg);
-        svg.appendChild(besogo.svgLabel(50, 50, 'black', '☽'));
+        svg.appendChild(besogo.svgLabel(50, 50, 'empty', '☽'));
 
         helpButton = document.createElement('button');
         helpButton.onclick = function() {
@@ -1464,7 +1463,7 @@ besogo.makeControlPanel = function(container, editor) {
         container.appendChild(helpButton);
         svg = makeButtonContainer();
         helpButton.appendChild(svg);
-        svg.appendChild(besogo.svgLabel(50, 50, 'black', '?'));
+        svg.appendChild(besogo.svgLabel(50, 50, 'empty', '?'));
     } // END function drawStyleButtons
 
     // Makes an SVG container for the button graphics
@@ -2104,6 +2103,15 @@ besogo.makeEditor = function(sizeX, sizeY) {
                 // Keep (add to game state tree) only if move succeeds
                 current.addChild(next);
                 current = next;
+                if (current.getMarkup(i, j) < 0) { // If there is a green hint
+                    if ( -current.getMarkup(i, j) !== getMoveNumber(current)) {
+                        // Clear green hint if inconsistent
+                        current.addMarkup(i, j, 0);
+                    }
+                } else if (current.getMarkup(i, j) === 2) {
+                    // Clear purple hints as they are played
+                    current.addMarkup(i, j, 0);
+                }
                 // Notify tree change, navigation, and stone change
                 notifyListeners({ treeChange: true, navChange: true, stoneChange: true });
             }
@@ -2111,6 +2119,15 @@ besogo.makeEditor = function(sizeX, sizeY) {
         } else if(current.playMove(i, j, color, allowAll)) { // Play in current
             // Only need to update if move succeeds
             notifyListeners({ stoneChange: true }); // Stones changed
+        }
+
+        function getMoveNumber(node) {
+            var i = 0;
+            while (node.parent) {
+                node = node.parent;
+                i++;
+            }
+            return i;
         }
     }
 
@@ -2199,10 +2216,11 @@ besogo.makeEditor = function(sizeX, sizeY) {
         path.reverse();
 
         for (i = 0; i < path.length; i++) {
+            path[i].submitted = true;
             node = path[i].move;
             if (i < solution.length && node.x === solution[i].x && node.y === solution[i].y) {
                 hints.push(GREEN);
-                setHints(path, i, 1);
+                setHints(path, i, -(i + 1));
             } else if (solution.find(move => move.x === node.x && move.y === node.y)) {
                 hints.push(YELLOW);
                 setHints(path, i, 2);
@@ -2389,9 +2407,9 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
         node.parent = parent;
         node.children = [];
 
+        node.submitted = false;
         node.move = null;
         node.setupStones = [];
-        node.markup = [];
         node.comment = ''; // Comment on this node
     }
     initNode(root, null); // Initialize root node with null parent
@@ -2570,11 +2588,11 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
         if (x < 1 || y < 1 || x > sizeX || y > sizeY) {
             return false; // Do not allow out of bounds markup
         }
-        if (!this.parent && this.getMarkup(x, y) === 1) {
+        if (!this.parent && this.getMarkup(x, y) < 0) {
             // Avoids overwriting green with yellow in root
             return false;
         }
-        this.markup[ fromXY(x, y) ] = mark;
+        this['markup' + x + '-' + y] = mark;
         return true;
     };
 
@@ -2606,7 +2624,7 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
 
     // Gets the markup at (x, y)
     root.getMarkup = function(x, y) {
-        return this.markup[ fromXY(x, y) ] || EMPTY;
+        return this['markup' + x + '-' + y]  || EMPTY;
     };
 
     // Returns the best hint type
@@ -3134,7 +3152,7 @@ besogo.exportPuzzles = function(editor) {
     for (i = 0; i < leafs.length; i++) {
         sequences.push(getMoveSequence(leafs[i]));
     }
-    return 'var puzzles = \n' + JSON.stringify(sequences);
+    return 'var puzzles = \n' + JSON.stringify(shuffle(sequences));
 
     // Returns list of the leaf nodes in the game tree
     function getLeafs(node) {
@@ -3157,6 +3175,16 @@ besogo.exportPuzzles = function(editor) {
             node = node.parent;
         }
         return moves.reverse();
+    }
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
     }
 };
 
@@ -3460,14 +3488,19 @@ besogo.svgCross = function(x, y, color) {
 
 // Makes an "+" plus sign at (x, y)
 besogo.svgPlus = function(x, y, color) {
-    var path = "m" + x + "," + (y - 28) + "v56m-28,-28h56";
-
-    return besogo.svgEl("path", {
+    var path = "m" + x + "," + (y - 28) + "v56m-28,-28h56",
+        attrs;
+    attrs = {
         d: path,
-        stroke: color,
+        'class': "besogo-last-plus",
         "stroke-width": 8,
         fill: "none"
-    });
+    };
+    if (color) {
+        attrs['stroke'] = color;
+    }
+
+    return besogo.svgEl("path", attrs);
 };
 
 // Makes a small filled square at (x, y)
@@ -3521,10 +3554,10 @@ besogo.svgLabel = function(x, y, color, label) {
         } else if (color > 0) {
             attrs["class"] = "besogo-white-label";
         } else {
-            attrs["class"] = "besogo-variant-label"
+            attrs["class"] = "besogo-empty-label"
         }
     } else {
-        attrs["fill"] = color;
+        attrs["class"] = "besogo-" + color + "-label";
     }
 
     element = besogo.svgEl("text", attrs);
@@ -3556,13 +3589,11 @@ besogo.makeToolPanel = function(container, editor) {
     svg = makeButtonSVG('addB', 'Set black\nctrl+click to play'); // Add black button
     element = besogo.svgEl('g');
     element.appendChild(besogo.svgStone(0, 0, -1)); // Black stone
-    // element.appendChild(besogo.svgPlus(0, 0, besogo.RED)); // Red plus
     svg.appendChild(element);
 
     svg = makeButtonSVG('addW', 'Set white\nctrl+click to play'); // Add white button
     element = besogo.svgEl('g');
     element.appendChild(besogo.svgStone(0, 0, 1)); // White stone
-    // element.appendChild(besogo.svgPlus(0, 0, besogo.RED)); // Red plus
     svg.appendChild(element);
 
     svg = makeButtonSVG('addE', 'Set empty point'); // Add empty button
@@ -3593,7 +3624,7 @@ besogo.makeToolPanel = function(container, editor) {
     svg.appendChild(element);
 
     svg = makeButtonSVG('label', 'Label'); // Label markup button
-    svg.appendChild(besogo.svgLabel(0, 0, 'black', 'A1'));
+    svg.appendChild(besogo.svgLabel(0, 0, 'empty', 'A1'));
 
     labelText = document.createElement("input"); // Label entry text field
     labelText.type = "text";
@@ -3883,18 +3914,14 @@ besogo.makeTreePanel = function(container, editor) {
         if (node.move) {
             hint = node.getMarkup(node.move.x, node.move.y);
         }
-        switch(hint) {
-            case 1:
-                hint = besogo.svgCircle(svgPos(x), svgPos(y), color)
-                break;
-            case 2:
-                hint = besogo.svgSquare(svgPos(x), svgPos(y), color)
-                break;
-            case 3:
-                hint = besogo.svgTriangle(svgPos(x), svgPos(y), color)
-                break;
-            default:
-                hint = 0
+        if (hint === 1 || hint < 0) {
+            hint = besogo.svgCircle(svgPos(x), svgPos(y), color)
+        } else if (hint === 2) {
+            hint = besogo.svgSquare(svgPos(x), svgPos(y), color)
+        } else if (hint === 3) {
+            hint = besogo.svgTriangle(svgPos(x), svgPos(y), color)
+        } else {
+            hint = 0;
         }
 
         switch(node.getType()){
