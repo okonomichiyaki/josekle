@@ -775,7 +775,10 @@ besogo.makeBoardDisplay = function(container, editor) {
                     y = svgPos(j);
                     stone = current.getStone(i, j);
                     color = stone; // Stone color int, may be overwriten with class str
-                    if (checkVariants(variants, current, i, j)) {
+                    if (lastMove && lastMove.x === i && lastMove.y === j) {
+                        color = 'last';
+                    }
+                    else if (checkVariants(variants, current, i, j)) {
                         color = 'variant';
                     }
                     if (typeof mark === 'number') { // Markup is a basic shape
