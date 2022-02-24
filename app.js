@@ -1,13 +1,22 @@
 const debug = window.location.href.includes("debug=true");
-const oneColor = window.location.href.includes("oneColor=true");
 const clearStorage = window.location.href.includes("clearStorage=true");
-const hardMode = window.location.href.includes("hardMode=true");
+const oneColor = storageLoad('oneColor');
+const hardMode = storageLoad('hardMode');
 var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟣";
-const ROTATE = "🔄";
 const TODAY = new Date();
+
+function toggleHardMode() {
+    storageSave('hardMode', !hardMode);
+    window.location.reload();
+}
+
+function toggleOneColor() {
+    storageSave('oneColor', !oneColor);
+    window.location.reload();
+}
 
 /* functions for emoji support detection */
 function supportsEmoji (e) {
