@@ -19,7 +19,7 @@ end
 # returns BesoGo extract move format: 1-19
 def ogs2besogo(placement)
     col = placement[0].downcase
-    col = if col.ord <= "h".ord then col.ord else col.ord-"a".ord end
+    col = if col.ord <= "h".ord then col.ord-"a".ord+1 else col.ord-"a".ord end
     row = 19-placement[1..].to_i+1
     {:x=>col,:y=>row}
 end
