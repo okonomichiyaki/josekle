@@ -248,3 +248,7 @@ SOFTWARE.
     stroke: #e50000;
     stroke-width: 8;
 }
+
+img.besogo-emoji {
+    padding: 1px;
+}
