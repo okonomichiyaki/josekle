@@ -6,6 +6,9 @@ var circles = ["🟢","⚪","🟣"];
 const GREEN = "🟢";
 const WHITE = "⚪";
 const YELLOW = "🟣";
+const GREEN_SQUARE = "🟩";
+const WHITE_SQUARE = "⬜";
+const YELLOW_SQUARE = "🟪";
 const TODAY = new Date();
 
 function toggleHardMode() {
@@ -35,6 +38,7 @@ function supportsAll(emojis) {
     return true;
 }
 const CIRCLES = supportsAll(circles);
+const SQUARES = supportsAll([GREEN_SQUARE, YELLOW_SQUARE, WHITE_SQUARE]);
 
 /* daily puzzle */
 function getNumber() {
@@ -104,7 +108,7 @@ function pretty_print(moves) {
 function wasCorrect(hints, solution) {
     // Considers guess to be correct if the solution is a prefix
     for (i=0; i < hints.length && i < solution.length; i++) {
-        if (hints[i]===YELLOW || hints[i]===WHITE) {
+        if (hints[i] !== GREEN) {
             return false;
         }
     }
@@ -147,24 +151,20 @@ function showExplorerLink(nodeId) {
 function display(hints, message) {
     var output = document.querySelector("#output");
     var p = document.createElement("p");
-    if (CIRCLES) {
+    if (CIRCLES && SQUARES) {
         p.innerText = hints + " " + message;
         output.appendChild(p);
     } else {
         var rest = [];
         var split = [...hints];
+        const symbols = [YELLOW, GREEN, WHITE, YELLOW_SQUARE, GREEN_SQUARE, WHITE_SQUARE];
+        const imageNames = ["yellow", "green", "white", "yellow-square", "green-square", "white-square"];
         split.forEach(c => {
-            if (c === YELLOW) {
+            const foundIndex = symbols.indexOf(c);
+            if (foundIndex >= 0) {
                 var img = document.createElement("img");
-                img.src = "img/emojis/yellow.png";
-                p.appendChild(img);
-            } else if (c === GREEN) {
-                var img = document.createElement("img");
-                img.src = "img/emojis/green.png";
-                p.appendChild(img);
-            } else if (c === WHITE) {
-                var img = document.createElement("img");
-                img.src = "img/emojis/white.png";
+                img.src = `img/emojis/${imageNames[foundIndex]}.png`;
+                img.className = "besogo-emoji";
                 p.appendChild(img);
             } else {
                 rest.push(c);
@@ -184,12 +184,14 @@ function isDictionaryReady() {
 }
 function checkDictionary(moves) {
     var isValid = true;
+    let counter = 0;
     const dict = document.querySelector("#dictionary-board").editor;
     moves.forEach(move => {
         isValid &= dict.navigate(move.x, move.y, false);
+        if (isValid) ++counter;
     })
     dict.prevNode(-1);// reset the dictionary board
-    return isValid;
+    return counter;
 }
 
 function showPopup(text) {
@@ -213,6 +215,20 @@ function submit() {
         return;
     }
     var hints = getInputEditor().check(solution);
+
+    var firstUnknownMoveIndex = checkDictionary(moves);
+    if (firstUnknownMoveIndex < moves.length) {
+        hints = hints.map((circle, index) => {
+            if (index < firstUnknownMoveIndex) {
+                return circle;
+            } else {
+                if (circle === GREEN) return GREEN_SQUARE;
+                if (circle === YELLOW) return YELLOW_SQUARE;
+                if (circle === WHITE) return WHITE_SQUARE;
+            }
+        })
+    }
+
     if (debug) {
         console.log("guess: " + pretty_print(moves));
         console.log("solution: " + pretty_print(solution));
@@ -251,7 +267,7 @@ function submit() {
                     message = "Phew";
             }
         }
-    } else if (!checkDictionary(moves)) {
+    } else if (firstUnknownMoveIndex < moves.length) {
         message = "Not present in the dictionary?";
     }
     storageSave(getTitle(),{
