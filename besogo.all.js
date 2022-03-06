@@ -2114,6 +2114,9 @@ besogo.makeEditor = function(sizeX, sizeY) {
                 } else if (current.getMarkup(i, j) === 2) {
                     // Clear purple hints as they are played
                     current.addMarkup(i, j, 0);
+                } else if (current.getMarkup(i, j) === 0) {
+                    // Set local empty hint to prevent propagation
+                    current.addMarkup(i, j, 0);
                 }
                 // Notify tree change, navigation, and stone change
                 notifyListeners({ treeChange: true, navChange: true, stoneChange: true });
