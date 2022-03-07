@@ -788,6 +788,12 @@ besogo.makeBoardDisplay = function(container, editor) {
                                 break;
                             case 2: // Yellow (actually purple)
                                 element = besogo.svgSquare(x, y, color);
+                                if (!stone) { // Check for exclusion if empty
+                                    if (current.checkExcluded(i, j, current.moveNumber + 1)) {
+                                        group.appendChild(element); // Cache the purple ring
+                                        element = besogo.svgBlock(x, y, color);
+                                    }
+                                }
                                 break;
                             case 3: // Missing
                                 element = besogo.svgTriangle(x, y, color);
@@ -2107,7 +2113,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
                 current.addChild(next);
                 current = next;
                 if (current.getMarkup(i, j) < 0) { // If there is a green hint
-                    if ( -current.getMarkup(i, j) !== getMoveNumber(current)) {
+                    if ( -current.getMarkup(i, j) !== current.moveNumber) {
                         // Clear green hint if inconsistent
                         current.addMarkup(i, j, 0);
                     }
@@ -2125,15 +2131,6 @@ besogo.makeEditor = function(sizeX, sizeY) {
         } else if(current.playMove(i, j, color, allowAll)) { // Play in current
             // Only need to update if move succeeds
             notifyListeners({ stoneChange: true }); // Stones changed
-        }
-
-        function getMoveNumber(node) {
-            var i = 0;
-            while (node.parent) {
-                node = node.parent;
-                i++;
-            }
-            return i;
         }
     }
 
@@ -2230,6 +2227,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
             } else if (solution.find(move => move.x === node.x && move.y === node.y)) {
                 hints.push(YELLOW);
                 setHints(path, i, 2);
+                root.setExcluded(node.x, node.y, i + 1);
             } else {
                 hints.push(WHITE);
                 setHints(path, i, 3);
@@ -2405,7 +2403,8 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
         root = { // Inherited attributes of root node
             blackCaps: 0,
             whiteCaps: 0,
-            moveNumber: 0
+            moveNumber: 0,
+            excluded: [] // Move numbers excluded by purple hints at each point
         };
 
     // Initializes non-inherited attributes
@@ -2628,25 +2627,29 @@ besogo.makeGameRoot = function(sizeX, sizeY) {
         }
     };
 
+    root.setExcluded = function(x, y, moveNum) {
+        var list = this.excluded[ fromXY(x, y) ];
+        if (list) {
+            if (!list.includes(moveNum)) {
+                list.push(moveNum);
+            }
+        } else {
+            this.excluded[ fromXY(x, y) ] = [ moveNum ];
+        }
+    };
+
+    root.checkExcluded = function(x, y, moveNum) {
+        var list = this.excluded[ fromXY(x, y) ];
+        if (list && list.includes(moveNum)) {
+            return true;
+        }
+        return false;
+    };
+
     // Gets the markup at (x, y)
     root.getMarkup = function(x, y) {
         return this['markup' + x + '-' + y]  || EMPTY;
     };
-
-    // Returns the best hint type
-    root.getBestHint = function() {
-        var i, j, mark, best = 4;
-        for (i = 1; i <= sizeX; i++) {
-            for (j = 1; j <= sizeY; j++) {
-                mark = this.getMarkup(i, j);
-                if (mark > 0 && mark < best) {
-                    best = mark;
-                }
-            }
-        }
-        return (best < 4 ? best : 0);
-    };
-
 
     // Determines the type of this node
     root.getType = function() {
@@ -3510,15 +3513,14 @@ besogo.svgPlus = function(x, y, color) {
 };
 
 // Makes a small filled square at (x, y)
+// NOTE: modified to make a purple "exclusion" mark
 besogo.svgBlock = function(x, y, color) {
-    return besogo.svgEl("rect", {
-        x: x - 18,
-        y: y - 18,
-        width: 36,
-        height: 36,
-        stroke: "none",
-        "stroke-width": 8,
-        fill: color
+    var path = "m" + (x - 24) + "," + (y - 24) + "l48,48m0,-48l-48,48";
+
+    return besogo.svgEl("path", {
+        d: path,
+        fill: "none",
+        'class': "besogo-svg-exclude"
     });
 };
 

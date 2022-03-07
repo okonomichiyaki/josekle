@@ -244,6 +244,11 @@ SOFTWARE.
     stroke-width: 12;
 }
 
+.besogo-svg-exclude {
+    stroke: #6d28d9;
+    stroke-width: 8;
+}
+
 .besogo-svg-miss {
     stroke: #e50000;
     stroke-width: 8;
