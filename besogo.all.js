@@ -2107,7 +2107,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
                 current.addChild(next);
                 current = next;
                 if (current.getMarkup(i, j) < 0) { // If there is a green hint
-                    if ( -current.getMarkup(i, j) !== getMoveNumber(current)) {
+                    if ( -current.getMarkup(i, j) !== current.moveNumber) {
                         // Clear green hint if inconsistent
                         current.addMarkup(i, j, 0);
                     }
@@ -2125,15 +2125,6 @@ besogo.makeEditor = function(sizeX, sizeY) {
         } else if(current.playMove(i, j, color, allowAll)) { // Play in current
             // Only need to update if move succeeds
             notifyListeners({ stoneChange: true }); // Stones changed
-        }
-
-        function getMoveNumber(node) {
-            var i = 0;
-            while (node.parent) {
-                node = node.parent;
-                i++;
-            }
-            return i;
         }
     }
 
